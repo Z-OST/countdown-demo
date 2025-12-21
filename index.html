@@ -1,138 +1,149 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Jadian Romantis</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+  <meta charset="UTF-8" />
+  <title>Our Time</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-            overflow: hidden;
-        }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 24px;
+      color: #111;
+      overflow: hidden; /* supaya hati tidak muncul scrollbar */
+    }
 
-        .container {
-            background: rgba(0,0,0,0.5);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            max-width: 350px;
-        }
+    .box {
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 32px 24px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
 
-        h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 2.2em;
-            margin-bottom: 20px;
-        }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
 
-        #countdown {
-            font-size: 1.5em;
-            margin: 20px 0;
-        }
+    /* timer */
+    .time {
+      font-size: 1.05rem;
+      margin-bottom: 22px;
+    }
 
-        img {
-            width: 100%;
-            border-radius: 15px;
-            margin: 20px 0;
-        }
+    /* spotify */
+    iframe {
+      width: 100%;
+      height: 80px;
+      border: none;
+    }
 
-        iframe {
-            border-radius: 15px;
-            width: 100%;
-            height: 80px;
-        }
+    /* animasi hati */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(-45deg);
+      animation: float 4s linear forwards;
+      z-index: 0;
+    }
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { top: 0; left: 10px; }
 
-        /* Animasi hati */
-        .heart {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: red;
-            transform: rotate(-45deg);
-            animation: float 4s linear infinite;
-        }
-        .heart::before, .heart::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: red;
-            border-radius: 50%;
-        }
-        .heart::before { top: -10px; left: 0; }
-        .heart::after { top: 0; left: 10px; }
-
-        @keyframes float {
-            0% { transform: translateY(0) rotate(-45deg); opacity: 1; }
-            100% { transform: translateY(-500px) rotate(-45deg); opacity: 0; }
-        }
-    </style>
+    @keyframes float {
+      0% { transform: translateY(0) rotate(-45deg); opacity: 1; }
+      100% { transform: translateY(-500px) rotate(-45deg); opacity: 0; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>💖 Countdown Jadian 💖</h1>
-        <div id="countdown"></div>
 
-        <div class="photo">
-            <img src="https://www.instagram.com/p/CONTOH_IMAGE/" alt="Foto Romantis">
-        </div>
+  <div class="box">
+    <h1>Our Time</h1>
 
-        <div class="music">
-            <h2>Lagu Romantis</h2>
-            <iframe src="https://open.spotify.com/embed/track/SONG_ID" 
-                    frameborder="0" allowtransparency="true" allow="encrypted-media">
-            </iframe>
-        </div>
-    </div>
+    <!-- timer -->
+    <div class="time" id="timer">Loading...</div>
 
-    <script>
-        // Tanggal jadian (YYYY, M-1, D)
-        const jadian = new Date(2024, 0, 15); // contoh: 15 Januari 2024
+    <!-- spotify -->
+    <iframe
+      src="https://open.spotify.com/embed/track/3W7KHojYGgYaoX9ogKO9hU"
+      allow="encrypted-media">
+    </iframe>
+  </div>
 
-        function updateCountdown() {
-            const now = new Date();
-            const diff = now - jadian;
+  <script>
+    // timer
+    const startDate = new Date("2025-11-03T00:00:00");
 
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
+    function updateTime() {
+      const now = new Date();
+      const diffMs = now - startDate;
 
-            document.getElementById("countdown").innerHTML = `
-                ${days} Hari<br>
-                ${hours} Jam<br>
-                ${minutes} Menit<br>
-                ${seconds} Detik
-            `;
-        }
+      if (diffMs < 0) {
+        document.getElementById("timer").innerText = "Belum dimulai";
+        return;
+      }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+      let diff = Math.floor(diffMs / 1000);
 
-        // Buat animasi hati
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.style.left = Math.random() * window.innerWidth + 'px';
-            heart.style.animationDuration = 2 + Math.random() * 3 + 's';
-            document.body.appendChild(heart);
+      const days = Math.floor(diff / 86400);
+      diff %= 86400;
+      const hours = Math.floor(diff / 3600);
+      diff %= 3600;
+      const minutes = Math.floor(diff / 60);
+      const seconds = diff % 60;
 
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
+      document.getElementById("timer").innerText =
+        `${days} hari ${hours} jam ${minutes} menit ${seconds} detik`;
+    }
 
-        setInterval(createHeart, 300);
-    </script>
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // animasi hati
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * window.innerWidth + 'px';
+      heart.style.width = 15 + Math.random() * 20 + 'px';
+      heart.style.height = heart.style.width;
+      heart.style.animationDuration = 2 + Math.random() * 3 + 's';
+      heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`; // variasi warna
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 5000);
+    }
+
+    setInterval(createHeart, 300); // buat hati tiap 0.3 detik
+  </script>
+
 </body>
 </html>
