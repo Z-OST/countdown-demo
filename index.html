@@ -83,7 +83,6 @@
 
       const bubble = document.createElement('div');
       bubble.classList.add('bubble');
-
       bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
 
       const size = 14 + Math.random() * 6;
@@ -106,14 +105,19 @@
       document.body.appendChild(bubble);
       activeBubbles.push(bubble);
 
+      // Hapus bubble setelah animasi selesai
       setTimeout(() => {
         bubble.remove();
         const index = activeBubbles.indexOf(bubble);
         if(index > -1) activeBubbles.splice(index,1);
       }, duration * 1000);
+
+      // Panggil bubble berikutnya **setelah 1 detik**, sehingga muncul satu-satu
+      setTimeout(createBubble, 1000);
     }
 
-    setInterval(createBubble, 1500);
+    // Mulai proses bubble berurutan
+    createBubble();
   </script>
 </body>
 </html>
