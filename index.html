@@ -61,20 +61,22 @@
 
   <script>
     const messages = [
-      "Aku sayang kamu lebih dari kata-kata yang bisa kuucapkan 💕",
-      "Selamanya kita bersama, menghadapi semua suka dan duka 😘",
-      "Kamu spesial untukku, lebih dari apapun di dunia ini 🌸",
-      "Cinta kita abadi, melewati setiap detik, menit, dan hari ❤️",
-      "Kamu membuatku bahagia setiap saat, bahkan saat jauh 😊",
-      "Kamu segalanya bagiku, tak tergantikan, tak terbatas 🌹",
-      "Setiap senyummu membuat hatiku meledak dengan cinta 💖",
-      "Bersamamu, setiap hari terasa seperti mimpi yang indah ✨"
+      "Just know that I would die for you – The Weeknd, Die For You 💖",
+      "You keep me open, I'm so devoted – SZA feat. Travis Scott, Open Arms 💕",
+      "Nothing’s gonna change my love for you – Classic Hit 💗",
+      "I just can't say I don't love you – The Weeknd, Die For You ❤️",
+      "Open arms, open arms – SZA feat. Travis Scott, Open Arms 💞",
+      "Maybe you didn’t mean to say 'I love you' – Billie Eilish, I Love You 💘",
+      "All of me loves all of you – John Legend, All of Me 💛",
+      "Just let me adore you – Harry Styles, Adore You 💖",
+      "You were Romeo, I was a scarlet letter – Taylor Swift, Love Story 💗",
+      "I can't help falling in love with you – Elvis Presley, Can’t Help Falling in Love ❤️"
     ];
 
-    const positions = ['left', 'center', 'right']; // posisi horizontal teratur
+    const positions = ['left', 'center', 'right']; 
     const activeBubbles = [];
-    const maxBubbles = 10; // maksimal bubble di layar
-    let posIndex = 0; // urut posisi
+    const maxBubbles = 10;
+    let posIndex = 0;
 
     function createBubble() {
       if (activeBubbles.length >= maxBubbles) return;
@@ -84,31 +86,26 @@
 
       bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
 
-      // ukuran font
       const size = 14 + Math.random() * 6;
       bubble.style.fontSize = size + 'px';
       bubble.style.padding = (size/2) + 'px ' + size + 'px';
 
-      // warna random
       const hue = Math.random() * 360;
       bubble.style.background = `hsl(${hue}, 70%, 60%)`;
 
-      // posisi horizontal merata
       const pos = positions[posIndex % positions.length];
       posIndex++;
       if(pos === 'left') bubble.style.left = '10%';
       else if(pos === 'center') bubble.style.left = '50%';
       else bubble.style.left = '80%';
-      if(pos === 'center') bubble.style.transform = 'translateX(-50%)'; // agar center bener
+      if(pos === 'center') bubble.style.transform = 'translateX(-50%)';
 
-      // durasi animasi lambat → 10-15 detik
       const duration = 10 + Math.random() * 5;
       bubble.style.animationDuration = duration + 's';
 
       document.body.appendChild(bubble);
       activeBubbles.push(bubble);
 
-      // hapus bubble setelah animasi
       setTimeout(() => {
         bubble.remove();
         const index = activeBubbles.indexOf(bubble);
@@ -116,7 +113,6 @@
       }, duration * 1000);
     }
 
-    // bubble muncul lebih lambat tiap 1.5 detik
     setInterval(createBubble, 1500);
   </script>
 </body>
