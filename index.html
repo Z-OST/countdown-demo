@@ -37,17 +37,19 @@
       border-radius: 20px;
       color: #fff;
       font-weight: bold;
-      white-space: nowrap;
+      white-space: normal; /* biar teks panjang wrap */
+      word-wrap: break-word; /* biar teks panjang pecah */
       opacity: 0.9;
       pointer-events: none;
       animation: rise linear forwards;
       padding: 10px 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      max-width: 80%; /* batasi lebar supaya muat layar */
     }
 
     @keyframes rise {
       0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-500px) scale(1.1); opacity: 0; }
+      100% { transform: translateY(-550px) scale(1.05); opacity: 0; }
     }
   </style>
 </head>
@@ -58,17 +60,19 @@
 
   <script>
     const messages = [
-      "Aku sayang kamu 💕",
-      "Selamanya kita 😘",
-      "Kamu spesial 🌸",
-      "Cinta kita abadi ❤️",
-      "Kamu membuatku bahagia 😊",
-      "Kamu segalanya 🌹"
+      "Aku sayang kamu lebih dari kata-kata yang bisa kuucapkan 💕",
+      "Selamanya kita bersama, menghadapi semua suka dan duka 😘",
+      "Kamu spesial untukku, lebih dari apapun di dunia ini 🌸",
+      "Cinta kita abadi, melewati setiap detik, menit, dan hari ❤️",
+      "Kamu membuatku bahagia setiap saat, bahkan saat jauh 😊",
+      "Kamu segalanya bagiku, tak tergantikan, tak terbatas 🌹",
+      "Setiap senyummu membuat hatiku meledak dengan cinta 💖",
+      "Bersamamu, setiap hari terasa seperti mimpi yang indah ✨"
     ];
 
     const activeBubbles = [];
-    const maxBubbles = 15; // jumlah bubble maksimal di layar
-    const bubbleSpacing = 60; // minimal jarak horizontal antar bubble
+    const maxBubbles = 12; // lebih sedikit supaya rapi
+    const bubbleSpacing = 50; // jarak horizontal minimal
 
     function createBubble() {
       if (activeBubbles.length >= maxBubbles) return;
@@ -76,11 +80,11 @@
       const bubble = document.createElement('div');
       bubble.classList.add('bubble');
 
-      // pilih teks random
+      // teks random
       bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
 
       // ukuran font random
-      const size = 14 + Math.random() * 8;
+      const size = 14 + Math.random() * 6;
       bubble.style.fontSize = size + 'px';
       bubble.style.padding = (size/2) + 'px ' + size + 'px';
 
@@ -88,18 +92,18 @@
       const hue = Math.random() * 360;
       bubble.style.background = `hsl(${hue}, 70%, 60%)`;
 
-      // posisi horizontal
+      // posisi horizontal aman
       let left;
       let tries = 0;
       do {
-        left = Math.random() * (window.innerWidth - 100);
+        left = 10 + Math.random() * (window.innerWidth - bubble.offsetWidth - 20);
         tries++;
       } while (activeBubbles.some(b => Math.abs(b.left - left) < bubbleSpacing) && tries < 20);
       bubble.style.left = left + 'px';
-      bubble.left = left; // simpan posisi untuk pengecekan jarak
+      bubble.left = left;
 
-      // durasi animasi berbeda-beda
-      const duration = 5 + Math.random() * 3;
+      // durasi animasi lebih lambat → lebih mudah dibaca
+      const duration = 8 + Math.random() * 4; // 8-12 detik
       bubble.style.animationDuration = duration + 's';
 
       document.body.appendChild(bubble);
@@ -113,8 +117,8 @@
       }, duration * 1000);
     }
 
-    // buat bubble tiap 800ms → lebih rapi
-    setInterval(createBubble, 800);
+    // buat bubble tiap 1200ms → lebih santai
+    setInterval(createBubble, 1200);
   </script>
 </body>
 </html>
