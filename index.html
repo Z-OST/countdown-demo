@@ -3,7 +3,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Our Love Bubbles</title>
+  <title>Our Love Bubbles Final</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -37,14 +37,15 @@
       border-radius: 20px;
       color: #fff;
       font-weight: bold;
-      white-space: normal; /* biar teks panjang wrap */
-      word-wrap: break-word; /* biar teks panjang pecah */
+      white-space: normal; 
+      word-wrap: break-word;
       opacity: 0.9;
       pointer-events: none;
       animation: rise linear forwards;
       padding: 10px 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      max-width: 80%; /* batasi lebar supaya muat layar */
+      max-width: 80%;
+      text-align: center;
     }
 
     @keyframes rise {
@@ -70,9 +71,10 @@
       "Bersamamu, setiap hari terasa seperti mimpi yang indah ✨"
     ];
 
+    const positions = ['left', 'center', 'right']; // posisi horizontal teratur
     const activeBubbles = [];
-    const maxBubbles = 12; // lebih sedikit supaya rapi
-    const bubbleSpacing = 50; // jarak horizontal minimal
+    const maxBubbles = 10; // maksimal bubble di layar
+    let posIndex = 0; // urut posisi
 
     function createBubble() {
       if (activeBubbles.length >= maxBubbles) return;
@@ -80,10 +82,9 @@
       const bubble = document.createElement('div');
       bubble.classList.add('bubble');
 
-      // teks random
       bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
 
-      // ukuran font random
+      // ukuran font
       const size = 14 + Math.random() * 6;
       bubble.style.fontSize = size + 'px';
       bubble.style.padding = (size/2) + 'px ' + size + 'px';
@@ -92,33 +93,31 @@
       const hue = Math.random() * 360;
       bubble.style.background = `hsl(${hue}, 70%, 60%)`;
 
-      // posisi horizontal aman
-      let left;
-      let tries = 0;
-      do {
-        left = 10 + Math.random() * (window.innerWidth - bubble.offsetWidth - 20);
-        tries++;
-      } while (activeBubbles.some(b => Math.abs(b.left - left) < bubbleSpacing) && tries < 20);
-      bubble.style.left = left + 'px';
-      bubble.left = left;
+      // posisi horizontal merata
+      const pos = positions[posIndex % positions.length];
+      posIndex++;
+      if(pos === 'left') bubble.style.left = '10%';
+      else if(pos === 'center') bubble.style.left = '50%';
+      else bubble.style.left = '80%';
+      if(pos === 'center') bubble.style.transform = 'translateX(-50%)'; // agar center bener
 
-      // durasi animasi lebih lambat → lebih mudah dibaca
-      const duration = 8 + Math.random() * 4; // 8-12 detik
+      // durasi animasi lambat → 10-15 detik
+      const duration = 10 + Math.random() * 5;
       bubble.style.animationDuration = duration + 's';
 
       document.body.appendChild(bubble);
       activeBubbles.push(bubble);
 
-      // hapus bubble setelah animasi selesai
+      // hapus bubble setelah animasi
       setTimeout(() => {
         bubble.remove();
         const index = activeBubbles.indexOf(bubble);
-        if (index > -1) activeBubbles.splice(index, 1);
+        if(index > -1) activeBubbles.splice(index,1);
       }, duration * 1000);
     }
 
-    // buat bubble tiap 1200ms → lebih santai
-    setInterval(createBubble, 1200);
+    // bubble muncul lebih lambat tiap 1.5 detik
+    setInterval(createBubble, 1500);
   </script>
 </body>
 </html>
