@@ -1,20 +1,63 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <title>Countdown Demo</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .foto {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 20px auto;
+      display: block;
+    }
+    #countdown {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
   <h1>Countdown Demo</h1>
 
- <img src="img/foto.jpg" alt="foto" width="300">
+  <!-- FOTO LANGSUNG DARI FOLDER img -->
+  <img src="img/foto.jpg" alt="foto" class="foto">
 
   <p id="teks">Menuju hari spesial</p>
 
   <h2 id="countdown">Loading...</h2>
 
-  <script src="script.js"></script>
+  <script>
+    // Ganti tanggal di sini
+    const targetDate = new Date("2025-12-31 00:00:00").getTime();
+    const countdownEl = document.getElementById("countdown");
+
+    setInterval(() => {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if(diff <= 0) {
+        countdownEl.innerHTML = "Hari ini 🎉";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff / (1000*60*60)) % 24);
+      const minutes = Math.floor((diff / (1000*60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      countdownEl.innerHTML = `${days} hari ${hours} jam ${minutes} menit ${seconds} detik`;
+    }, 1000);
+  </script>
+
 </body>
 </html>
