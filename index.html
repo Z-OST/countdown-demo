@@ -1,149 +1,99 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Our Time</title>
+  <title>Our Love Bubbles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    * {
-      box-sizing: border-box;
+    body {
       margin: 0;
       padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
-      align-items: center;
       justify-content: center;
-      background: #ffffff;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
       font-family: Arial, Helvetica, sans-serif;
-      padding: 24px;
-      color: #111;
-      overflow: hidden; /* supaya hati tidak muncul scrollbar */
     }
 
-    .box {
-      width: 100%;
-      max-width: 360px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 32px 24px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-      text-align: center;
+    .bubble {
+      position: absolute;
+      bottom: 0;
+      padding: 8px 14px;
+      border-radius: 20px;
+      color: #fff;
+      font-weight: bold;
+      white-space: nowrap;
+      animation: rise 5s linear forwards;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-500px) scale(1.2); opacity: 0; }
+    }
+
+    .container {
       position: relative;
       z-index: 1;
+      text-align: center;
+      color: white;
     }
 
     h1 {
-      font-size: 1.9rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    /* timer */
-    .time {
-      font-size: 1.05rem;
-      margin-bottom: 22px;
-    }
-
-    /* spotify */
-    iframe {
-      width: 100%;
-      height: 80px;
-      border: none;
-    }
-
-    /* animasi hati */
-    .heart {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: red;
-      transform: rotate(-45deg);
-      animation: float 4s linear forwards;
-      z-index: 0;
-    }
-    .heart::before,
-    .heart::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: red;
-      border-radius: 50%;
-    }
-    .heart::before { top: -10px; left: 0; }
-    .heart::after { top: 0; left: 10px; }
-
-    @keyframes float {
-      0% { transform: translateY(0) rotate(-45deg); opacity: 1; }
-      100% { transform: translateY(-500px) rotate(-45deg); opacity: 0; }
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
-
-  <div class="box">
-    <h1>Our Time</h1>
-
-    <!-- timer -->
-    <div class="time" id="timer">Loading...</div>
-
-    <!-- spotify -->
-    <iframe
-      src="https://open.spotify.com/embed/track/3W7KHojYGgYaoX9ogKO9hU"
-      allow="encrypted-media">
-    </iframe>
+  <div class="container">
+    <h1>Our Love Bubbles 💖</h1>
   </div>
 
   <script>
-    // timer
-    const startDate = new Date("2025-11-03T00:00:00");
+    const messages = [
+      "Aku sayang kamu 💕",
+      "Selamanya kita 😘",
+      "Kamu spesial 🌸",
+      "Cinta kita abadi ❤️",
+      "Kamu membuatku bahagia 😊",
+      "Kamu segalanya 🌹"
+    ];
 
-    function updateTime() {
-      const now = new Date();
-      const diffMs = now - startDate;
+    function createBubble() {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
 
-      if (diffMs < 0) {
-        document.getElementById("timer").innerText = "Belum dimulai";
-        return;
-      }
+      // Pilih teks random
+      bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
 
-      let diff = Math.floor(diffMs / 1000);
+      // Posisi horizontal random
+      bubble.style.left = Math.random() * window.innerWidth + 'px';
 
-      const days = Math.floor(diff / 86400);
-      diff %= 86400;
-      const hours = Math.floor(diff / 3600);
-      diff %= 3600;
-      const minutes = Math.floor(diff / 60);
-      const seconds = diff % 60;
+      // Warna random
+      const hue = Math.random() * 360;
+      bubble.style.background = `hsl(${hue}, 70%, 60%)`;
 
-      document.getElementById("timer").innerText =
-        `${days} hari ${hours} jam ${minutes} menit ${seconds} detik`;
-    }
+      // Ukuran random
+      const size = 12 + Math.random() * 10;
+      bubble.style.fontSize = size + 'px';
+      bubble.style.padding = (size/2) + 'px ' + size + 'px';
 
-    updateTime();
-    setInterval(updateTime, 1000);
+      document.body.appendChild(bubble);
 
-    // animasi hati
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.style.left = Math.random() * window.innerWidth + 'px';
-      heart.style.width = 15 + Math.random() * 20 + 'px';
-      heart.style.height = heart.style.width;
-      heart.style.animationDuration = 2 + Math.random() * 3 + 's';
-      heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`; // variasi warna
-      document.body.appendChild(heart);
-
+      // Hapus bubble setelah animasi
       setTimeout(() => {
-        heart.remove();
+        bubble.remove();
       }, 5000);
     }
 
-    setInterval(createHeart, 300); // buat hati tiap 0.3 detik
+    // Buat bubble setiap 300ms
+    setInterval(createBubble, 300);
   </script>
-
 </body>
 </html>
