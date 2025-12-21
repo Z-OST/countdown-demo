@@ -2,9 +2,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Our Love Bubbles</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -18,24 +18,6 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    .bubble {
-      position: absolute;
-      bottom: 0;
-      padding: 8px 14px;
-      border-radius: 20px;
-      color: #fff;
-      font-weight: bold;
-      white-space: nowrap;
-      animation: rise 5s linear forwards;
-      opacity: 0.9;
-      pointer-events: none;
-    }
-
-    @keyframes rise {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-500px) scale(1.2); opacity: 0; }
-    }
-
     .container {
       position: relative;
       z-index: 1;
@@ -47,6 +29,25 @@
       font-size: 2rem;
       margin-bottom: 20px;
       text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .bubble {
+      position: fixed;
+      bottom: 0;
+      border-radius: 20px;
+      color: #fff;
+      font-weight: bold;
+      white-space: nowrap;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: rise linear forwards;
+      padding: 10px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-500px) scale(1.1); opacity: 0; }
     }
   </style>
 </head>
@@ -65,35 +66,55 @@
       "Kamu segalanya 🌹"
     ];
 
+    const activeBubbles = [];
+    const maxBubbles = 15; // jumlah bubble maksimal di layar
+    const bubbleSpacing = 60; // minimal jarak horizontal antar bubble
+
     function createBubble() {
+      if (activeBubbles.length >= maxBubbles) return;
+
       const bubble = document.createElement('div');
       bubble.classList.add('bubble');
 
-      // Pilih teks random
+      // pilih teks random
       bubble.innerText = messages[Math.floor(Math.random() * messages.length)];
 
-      // Posisi horizontal random
-      bubble.style.left = Math.random() * window.innerWidth + 'px';
-
-      // Warna random
-      const hue = Math.random() * 360;
-      bubble.style.background = `hsl(${hue}, 70%, 60%)`;
-
-      // Ukuran random
-      const size = 12 + Math.random() * 10;
+      // ukuran font random
+      const size = 14 + Math.random() * 8;
       bubble.style.fontSize = size + 'px';
       bubble.style.padding = (size/2) + 'px ' + size + 'px';
 
-      document.body.appendChild(bubble);
+      // warna random
+      const hue = Math.random() * 360;
+      bubble.style.background = `hsl(${hue}, 70%, 60%)`;
 
-      // Hapus bubble setelah animasi
+      // posisi horizontal
+      let left;
+      let tries = 0;
+      do {
+        left = Math.random() * (window.innerWidth - 100);
+        tries++;
+      } while (activeBubbles.some(b => Math.abs(b.left - left) < bubbleSpacing) && tries < 20);
+      bubble.style.left = left + 'px';
+      bubble.left = left; // simpan posisi untuk pengecekan jarak
+
+      // durasi animasi berbeda-beda
+      const duration = 5 + Math.random() * 3;
+      bubble.style.animationDuration = duration + 's';
+
+      document.body.appendChild(bubble);
+      activeBubbles.push(bubble);
+
+      // hapus bubble setelah animasi selesai
       setTimeout(() => {
         bubble.remove();
-      }, 5000);
+        const index = activeBubbles.indexOf(bubble);
+        if (index > -1) activeBubbles.splice(index, 1);
+      }, duration * 1000);
     }
 
-    // Buat bubble setiap 300ms
-    setInterval(createBubble, 300);
+    // buat bubble tiap 800ms → lebih rapi
+    setInterval(createBubble, 800);
   </script>
 </body>
 </html>
