@@ -20,20 +20,20 @@ input:focus { border-color:#3498db; outline:none; }
 <div class="container">
 <h1>Diamond 💎</h1>
 <div class="card">
-  <label for="price">Harga Sekarang (USD)</label>
-  <input type="number" id="price" placeholder="Harga sekarang">
+  <label for="price">Harga Beli per Unit (USD)</label>
+  <input type="number" id="price" placeholder="Contoh: 10">
 
-  <label for="amount">Jumlah Koin</label>
-  <input type="number" id="amount" placeholder="Jumlah koin yang dimiliki">
+  <label for="amount">Jumlah Uang yang Ingin Investasi (USD)</label>
+  <input type="number" id="amount" placeholder="Contoh: 100">
 
   <label for="balance">Saldo Akun (USD)</label>
-  <input type="number" id="balance" placeholder="Saldo akun">
+  <input type="number" id="balance" placeholder="Contoh: 500">
 
   <label for="risk">Risk % per Trade</label>
-  <input type="number" id="risk" placeholder="Risk per trade (%)">
+  <input type="number" id="risk" placeholder="Contoh: 2">
 
-  <label for="target">Target Harga Jual (USD)</label>
-  <input type="number" id="target" placeholder="Target harga jual">
+  <label for="target">Target Harga Jual per Unit (USD)</label>
+  <input type="number" id="target" placeholder="Contoh: 12">
 
   <div class="results"></div>
 </div>
@@ -51,33 +51,37 @@ const resultsDiv = document.querySelector('.results');
 
 function calculate(){
   const price = parseFloat(priceInput.value);
-  const amount = parseFloat(amountInput.value);
+  const invest = parseFloat(amountInput.value);
   const balance = parseFloat(balanceInput.value);
   const risk = parseFloat(riskInput.value);
   const target = parseFloat(targetInput.value);
 
-  if([price, amount, balance, risk, target].some(v => isNaN(v))) {
+  if([price, invest, balance, risk, target].some(v => isNaN(v))) {
     resultsDiv.innerText='';
     return;
   }
 
-  const totalBuy = price*amount;
-  const totalSell = target*amount;
+  // Hitung jumlah unit yang bisa dibeli
+  const units = invest / price;
+
+  const totalBuy = price * units;
+  const totalSell = target * units;
   const profit = (totalSell - totalBuy)*(1-fee);
   const profitPercent = ((totalSell - totalBuy)/totalBuy)*100;
   const maxLoss = balance*(risk/100);
   const positionSize = maxLoss / Math.abs(price - target);
 
   resultsDiv.innerText =
-`Total Beli       : $${totalBuy.toFixed(2)}
-Total Jual       : $${totalSell.toFixed(2)}
-Profit/Loss      : $${profit.toFixed(2)} (${profitPercent.toFixed(2)}%)
-Max Position Size : ${positionSize.toFixed(4)} koin sesuai risk`;
+`Jumlah Unit        : ${units.toFixed(4)}
+Total Beli         : $${totalBuy.toFixed(2)}
+Target Jual        : $${totalSell.toFixed(2)}
+Profit/Loss        : $${profit.toFixed(2)} (${profitPercent.toFixed(2)}%)
+Max Position Size   : $${(positionSize*price).toFixed(2)} sesuai risk`;
 
   resultsDiv.style.color = profit>=0 ? '#27ae60' : '#c0392b';
 }
 
-// Hitung langsung tiap input berubah
+// Update langsung tiap input berubah
 [priceInput, amountInput, balanceInput, riskInput, targetInput].forEach(inp => {
   inp.addEventListener('input', calculate);
 });
