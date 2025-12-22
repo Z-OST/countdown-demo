@@ -59,17 +59,18 @@ function calculate(){
     return;
   }
 
-  // RUMUS PERSIS SESUAI YANG LO MAU
-  const labaBersih = target - price;
-  const ROI = (labaBersih / price) * 100;
-  const totalPendapatan = invest + ROI; // ROI + jumlah investasi
-  const keuntunganInvestasi = totalPendapatan - invest;
+  // === RUMUS SESUAI PERINTAH LO ===
+  const labaBersih = target - price;                      // Harga jual - harga beli
+  const ROI = (labaBersih / price) * 100;               // Laba bersih : harga beli x 100
+  const totalPendapatan = invest + ROI;                 // ROI + jumlah investasi
+  const keuntunganInvestasi = totalPendapatan - invest; // Total pendapatan - investasi
+  // ==================================
 
   resultsDiv.innerText =
 `Laba Bersih           : $${labaBersih.toFixed(4)}
-ROI (%)                : ${ROI.toFixed(2)}%
-Total Pendapatan       : $${totalPendapatan.toFixed(4)}
-Keuntungan Investasi   : $${keuntunganInvestasi.toFixed(4)}`;
+ROI (%)               : ${ROI.toFixed(2)}%
+Total Pendapatan      : $${totalPendapatan.toFixed(4)}
+Keuntungan Investasi  : $${keuntunganInvestasi.toFixed(4)}`;
 
   if(target > price){
     signalDiv.innerText = `BUY ✅`;
@@ -80,7 +81,6 @@ Keuntungan Investasi   : $${keuntunganInvestasi.toFixed(4)}`;
   }
 }
 
-// Update langsung saat input berubah
 [balanceInput, investInput, priceInput, targetInput].forEach(inp => inp.addEventListener('input', calculate));
 </script>
 </body>
