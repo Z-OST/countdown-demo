@@ -1,87 +1,67 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💲 | Quick Trade ROI</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body { background:#ffffff; font-family:Arial,sans-serif; padding:20px; color:#111; }
-h1 { text-align:center; margin-bottom:20px; font-weight:bold; color:#333; }
-.card { background:#f8f9fa; border-radius:15px; padding:20px; max-width:500px; margin:0 auto; box-shadow:0 5px 15px rgba(0,0,0,0.08); }
-.card label { font-weight:bold; margin-top:10px; display:block; }
-input { margin-bottom:10px; width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; }
-input:focus { border-color:#3498db; outline:none; }
-.results { white-space:pre-line; font-weight:bold; margin-top:10px; font-size:1rem; }
-.signal { font-weight:bold; font-size:1.2rem; margin-top:10px; }
-.signal.buy { color:#27ae60; }
-.signal.sell { color:#c0392b; }
+body { font-family:Arial,sans-serif; padding:20px; background:#fff; color:#111; }
+h1 { text-align:center; margin-bottom:20px; }
+label { display:block; margin-top:10px; font-weight:bold; }
+input { width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px; }
+.results { white-space:pre-line; font-weight:bold; margin-top:10px; }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>💲</h1>
-<div class="card">
-  <label for="balance">Saldo Akun (USD)</label>
-  <input type="number" step="0.01" id="balance">
+<h1>💲 Quick Trade ROI</h1>
 
-  <label for="invest">Jumlah Investasi (USD)</label>
-  <input type="number" step="0.01" id="invest">
+<label>Saldo Akun (USD)</label>
+<input type="number" step="0.01" id="balance">
 
-  <label for="price">Harga Beli per Unit (USD)</label>
-  <input type="number" step="0.0001" id="price">
+<label>Jumlah Investasi (USD)</label>
+<input type="number" step="0.01" id="invest">
 
-  <label for="target">Harga Jual per Unit (USD)</label>
-  <input type="number" step="0.0001" id="target">
+<label>Harga Beli per Unit (USD)</label>
+<input type="number" step="0.0001" id="price">
 
-  <div class="results"></div>
-  <div class="signal"></div>
-</div>
-</div>
+<label>Harga Jual per Unit (USD)</label>
+<input type="number" step="0.0001" id="target">
+
+<div class="results" id="results"></div>
 
 <script>
 const balanceInput = document.getElementById('balance');
 const investInput = document.getElementById('invest');
 const priceInput = document.getElementById('price');
 const targetInput = document.getElementById('target');
-const resultsDiv = document.querySelector('.results');
-const signalDiv = document.querySelector('.signal');
+const resultsDiv = document.getElementById('results');
 
-function calculate(){
+function calculate() {
   const balance = parseFloat(balanceInput.value);
   const invest = parseFloat(investInput.value);
   const price = parseFloat(priceInput.value);
   const target = parseFloat(targetInput.value);
 
-  if([balance, invest, price, target].some(v => isNaN(v))) {
-    resultsDiv.innerText='';
-    signalDiv.innerText='';
+  if ([balance, invest, price, target].some(v => isNaN(v))) {
+    resultsDiv.innerText = '';
     return;
   }
 
-  // === RUMUS PERSIS SESUAI PERINTAH ===
-  const labaBersih = target - price;                       // Harga jual - harga beli
-  const ROI = (labaBersih / price) * 100;                 // Laba bersih : harga beli x 100
-  const totalPendapatan = invest + ROI;                   // ROI + jumlah investasi
-  const keuntunganInvestasi = totalPendapatan - invest;   // Total pendapatan - investasi
-  // =====================================
+  // === RUMUS PERSIS SESUAI LO ===
+  const labaBersih = target - price;
+  const ROI = (labaBersih / price) * 100;
+  const totalPendapatan = ROI + invest;
+  const keuntunganInvestasi = totalPendapatan - invest;
 
   resultsDiv.innerText =
 `Laba Bersih           : $${labaBersih.toFixed(4)}
-ROI (%)               : ${ROI.toFixed(2)}%
-Total Pendapatan      : $${totalPendapatan.toFixed(4)}
-Keuntungan Investasi  : $${keuntunganInvestasi.toFixed(4)}`;
-
-  if(target > price){
-    signalDiv.innerText = `BUY ✅`;
-    signalDiv.className = 'signal buy';
-  } else {
-    signalDiv.innerText = `SELL ⚠️`;
-    signalDiv.className = 'signal sell';
-  }
+ROI (%)                : ${ROI.toFixed(2)}%
+Total Pendapatan       : $${totalPendapatan.toFixed(4)}
+Keuntungan Investasi   : $${keuntunganInvestasi.toFixed(4)}`;
 }
 
-// Update langsung saat input berubah
+// update langsung saat input
 [balanceInput, investInput, priceInput, targetInput].forEach(inp => inp.addEventListener('input', calculate));
 </script>
 </body>
