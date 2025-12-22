@@ -4,116 +4,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Crypto Dashboard Final - No Chart</title>
+<title>Pro Crypto Dashboard Single Box</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body { background:#ffffff; color:#111; font-family: Arial,sans-serif; padding:20px; transition: background 0.3s, color 0.3s;}
+body { background:#ffffff; color:#111; font-family: Arial,sans-serif; padding:20px; transition: background 0.3s, color 0.3s; }
 h1 { text-align:center; margin-bottom:20px; color:#333; }
-.card { background: rgba(0,0,0,0.05); border-radius:15px; padding:20px; margin-bottom:20px; color:#111; transition: background 0.3s, color 0.3s;}
-input { margin-bottom:10px; }
-.results { white-space:pre-line; font-weight:bold; color:#d35400; }
-#themeToggle { display:block; margin:0 auto 20px; }
+.card { background: rgba(0,0,0,0.05); border-radius:15px; padding:20px; max-width:500px; margin:0 auto; color:#111; transition: background 0.3s, color 0.3s;}
+.card label { font-weight:bold; margin-top:10px; display:block; }
+input { margin-bottom:10px; width:100%; }
+.results { white-space:pre-line; font-weight:bold; color:#d35400; margin-top:10px; }
+#themeToggle { display:block; margin:20px auto 0; }
 </style>
 </head>
 <body>
 <div class="container">
 <h1>Pro Crypto Dashboard 💎</h1>
+
+<div class="card">
+  <label for="coin">Koin (Symbol)</label>
+  <input type="text" id="coin" placeholder="Contoh: BTC, ETH">
+  
+  <label for="amount">Jumlah Koin</label>
+  <input type="number" id="amount" placeholder="Jumlah koin yang dimiliki">
+  
+  <label for="balance">Saldo Akun (USD)</label>
+  <input type="number" id="balance" placeholder="Saldo akun">
+  
+  <label for="risk">Risk % per Trade</label>
+  <input type="number" id="risk" placeholder="Risk per trade (%)">
+  
+  <label for="target">Target Harga Jual (USD)</label>
+  <input type="number" id="target" placeholder="Target harga jual">
+  
+  <div class="price mt-2">Harga real-time: ...</div>
+  <div class="results mt-2"></div>
+</div>
+
 <button id="themeToggle" class="btn btn-secondary">Ganti Tema</button>
-<div class="row" id="coins-container"></div>
 </div>
 
 <script>
-const coins = [
-  {id:"bitcoin", symbol:"BTC"},
-  {id:"ethereum", symbol:"ETH"},
-  {id:"bnb", symbol:"BNB"},
-  {id:"cardano", symbol:"ADA"},
-  {id:"dogecoin", symbol:"DOGE"}
-];
-
 const fee = 0.001;
-const coinsContainer = document.getElementById('coins-container');
+const coinInput = document.getElementById('coin');
+const amountInput = document.getElementById('amount');
+const balanceInput = document.getElementById('balance');
+const riskInput = document.getElementById('risk');
+const targetInput = document.getElementById('target');
+const priceDiv = document.querySelector('.price');
+const resultsDiv = document.querySelector('.results');
 let isDark = false;
 
-function createCoinCard(coin){
-  const cardDiv = document.createElement('div');
-  cardDiv.classList.add('col-md-6','col-lg-4');
-  cardDiv.innerHTML = `
-    <div class="card">
-      <h4>${coin.symbol.toUpperCase()}</h4>
-      <input type="number" class="form-control amount" placeholder="Jumlah Koin">
-      <input type="number" class="form-control balance" placeholder="Saldo akun (USD)">
-      <input type="number" class="form-control risk" placeholder="Risk % per trade">
-      <input type="number" class="form-control target" placeholder="Target harga jual (USD)">
-      <div class="price mt-2">Harga real-time: ...</div>
-      <div class="results mt-2"></div>
-    </div>`;
-  coinsContainer.appendChild(cardDiv);
-}
-
-coins.forEach(createCoinCard);
-
-async function getPrice(coinId){
+// Ambil harga real-time dari CoinGecko
+async function getPrice(symbol){
   try{
-    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`);
+    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${symbol.toLowerCase()}&vs_currencies=usd`);
     const data = await res.json();
-    return data[coinId]?.usd || 0;
+    return data[symbol.toLowerCase()]?.usd || 0;
   } catch(e){ return 0; }
 }
 
 async function updateDashboard(){
-  const cards = document.querySelectorAll('#coins-container .card');
-  for(let i=0;i<coins.length;i++){
-    const card = cards[i];
-    const coin = coins[i];
-    const amount = parseFloat(card.querySelector('.amount').value);
-    const balance = parseFloat(card.querySelector('.balance').value);
-    const risk = parseFloat(card.querySelector('.risk').value);
-    const target = parseFloat(card.querySelector('.target').value);
-    const currentPrice = await getPrice(coin.id);
+  const coin = coinInput.value.trim();
+  if(!coin) return;
 
-    card.querySelector('.price').innerText = `Harga real-time ${coin.symbol.toUpperCase()}: $${currentPrice}`;
+  const amount = parseFloat(amountInput.value);
+  const balance = parseFloat(balanceInput.value);
+  const risk = parseFloat(riskInput.value);
+  const target = parseFloat(targetInput.value);
 
-    if(isNaN(amount) || isNaN(balance) || isNaN(risk) || isNaN(target) || currentPrice===0){
-      card.querySelector('.results').innerText='';
-      continue;
-    }
+  const currentPrice = await getPrice(coin);
+  priceDiv.innerText = `Harga real-time ${coin.toUpperCase()}: $${currentPrice}`;
 
-    const totalBuy = currentPrice*amount;
-    const totalSell = target*amount;
-    const profit = (totalSell - totalBuy)*(1-fee);
-    const profitPercent = ((totalSell - totalBuy)/totalBuy)*100;
-    const maxLoss = balance*(risk/100);
-    const positionSize = maxLoss / Math.abs(currentPrice - target);
+  if(isNaN(amount) || isNaN(balance) || isNaN(risk) || isNaN(target) || currentPrice===0){
+    resultsDiv.innerText='';
+    return;
+  }
 
-    const resultsText =
+  const totalBuy = currentPrice*amount;
+  const totalSell = target*amount;
+  const profit = (totalSell - totalBuy)*(1-fee);
+  const profitPercent = ((totalSell - totalBuy)/totalBuy)*100;
+  const maxLoss = balance*(risk/100);
+  const positionSize = maxLoss / Math.abs(currentPrice - target);
+
+  resultsDiv.innerText =
 `Total Beli       : $${totalBuy.toFixed(2)}
 Total Jual       : $${totalSell.toFixed(2)}
 Profit/Loss      : $${profit.toFixed(2)} (${profitPercent.toFixed(2)}%)
 Max Position Size : ${positionSize.toFixed(4)} koin sesuai risk`;
 
-    const resultsDiv = card.querySelector('.results');
-    resultsDiv.innerText = resultsText;
-    resultsDiv.style.color = profit>=0 ? '#27ae60' : '#c0392b';
-  }
+  resultsDiv.style.color = profit>=0 ? '#27ae60' : '#c0392b';
 }
 
-updateDashboard();
-setInterval(updateDashboard,1000);
-document.querySelectorAll('#coins-container').forEach(c=>c.addEventListener('input',updateDashboard));
+// Update otomatis saat input berubah
+[coinInput, amountInput, balanceInput, riskInput, targetInput].forEach(inp => inp.addEventListener('input', updateDashboard));
 
-// Theme toggle
+// Jalankan setiap 1 detik untuk update harga
+setInterval(updateDashboard,1000);
+
+// Toggle tema
 const themeToggle = document.getElementById('themeToggle');
 themeToggle.addEventListener('click', () => {
   if(isDark){
     document.body.style.background = '#ffffff';
     document.body.style.color = '#111';
-    document.querySelectorAll('.card').forEach(c => c.style.background = 'rgba(0,0,0,0.05)');
+    document.querySelector('.card').style.background = 'rgba(0,0,0,0.05)';
     isDark = false;
   } else {
     document.body.style.background = '#121212';
     document.body.style.color = '#fff';
-    document.querySelectorAll('.card').forEach(c => c.style.background = 'rgba(255,255,255,0.05)');
+    document.querySelector('.card').style.background = 'rgba(255,255,255,0.05)';
     isDark = true;
   }
 });
