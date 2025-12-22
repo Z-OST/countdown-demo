@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -59,11 +60,11 @@ function calculate(){
     return;
   }
 
-  // === RUMUS SESUAI PERINTAH LO ===
+  // === RUMUS PERSIS SESUAI PERINTAH LO ===
   const labaBersih = target - price;                      // Harga jual - harga beli
   const ROI = (labaBersih / price) * 100;               // Laba bersih : harga beli x 100
-  const totalPendapatan = invest + ROI;                 // ROI + jumlah investasi
-  const keuntunganInvestasi = totalPendapatan - invest; // Total pendapatan - investasi
+  const totalPendapatan = invest + ROI;                 // ROI + uang yang di investasikan
+  const keuntunganInvestasi = totalPendapatan - invest; // Total pendapatan - uang yang di investasikan
   // ==================================
 
   resultsDiv.innerText =
@@ -81,6 +82,7 @@ Keuntungan Investasi  : $${keuntunganInvestasi.toFixed(4)}`;
   }
 }
 
+// Update langsung saat input berubah
 [balanceInput, investInput, priceInput, targetInput].forEach(inp => inp.addEventListener('input', calculate));
 </script>
 </body>
