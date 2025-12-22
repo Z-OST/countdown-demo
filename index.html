@@ -3,96 +3,90 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Mark Joe Portfolio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Trading Dashboard</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-  body {
-    margin:0; padding:0; height:100vh;
-    display:flex; justify-content:center; align-items:center;
-    background: linear-gradient(135deg, #1f1c2c, #928dab);
-    font-family: 'Arial', sans-serif; overflow:hidden; position:relative;
-    color: #fff;
-  }
-
-  /* Floating particles */
-  .particle {
-    position:absolute; border-radius:50%;
-    background: rgba(255,255,255,0.2);
-    animation: float 10s linear infinite;
-    pointer-events:none;
-  }
-
-  @keyframes float {
-    0% { transform: translateY(0) scale(1); opacity:0.6; }
-    100% { transform: translateY(-700px) scale(1.2); opacity:0; }
-  }
-
-  .portfolio-box {
-    position: relative; width: 350px; max-width:90%;
-    background: rgba(255,255,255,0.05); border-radius:20px;
-    padding:30px; text-align:center; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    backdrop-filter: blur(12px); z-index:1;
-  }
-
-  .portfolio-box img {
-    width:100px; height:100px; border-radius:50%; margin-bottom:16px;
-    border:2px solid rgba(255,255,255,0.5);
-  }
-
-  h1 { margin:8px 0; font-size:2rem; }
-  p { font-size:1rem; margin:4px 0; color: #ddd; }
-
-  .changing-text {
-    margin-top:12px; font-weight:bold; color:#f8c291; min-height:24px;
-  }
-
-  .btn-contact {
-    margin-top:16px;
-    background:#f8c291; color:#1f1c2c; font-weight:bold;
-  }
+body { font-family: Arial,sans-serif; background:#0f0f0f; color:#fff; padding:20px; }
+.container { max-width:700px; margin:auto; }
+.card { background: rgba(255,255,255,0.05); border-radius:15px; padding:20px; margin-bottom:20px; }
+input, select { margin-bottom:12px; }
+#results { white-space:pre-line; font-weight:bold; color:#f8c291; }
 </style>
 </head>
 <body>
-<div id="particles"></div>
+<div class="container">
+  <h1 class="text-center mb-4">Crypto Dashboard Sultan 💎</h1>
+  <div class="card">
+    <label>Coin:</label>
+    <select id="coin">
+      <option value="bitcoin">Bitcoin (BTC)</option>
+      <option value="ethereum">Ethereum (ETH)</option>
+      <option value="bnb">BNB</option>
+      <option value="cardano">Cardano (ADA)</option>
+      <option value="dogecoin">Dogecoin (DOGE)</option>
+    </select>
+    <input type="number" id="amount" class="form-control" placeholder="Jumlah Koin">
+    <input type="number" id="balance" class="form-control" placeholder="Saldo akun (USD)">
+    <input type="number" id="risk" class="form-control" placeholder="Risk % per trade">
+    <input type="number" id="target" class="form-control" placeholder="Target harga jual (USD)">
+  </div>
 
-<div class="portfolio-box">
-  <img src="https://i.pravatar.cc/150?img=32" alt="Profile">
-  <h1>Mark Joe</h1>
-  <p>Gen Z Developer & Music Lover</p>
-  <div class="changing-text" id="changingText"></div>
-  <a href="mailto:markjoe@example.com" class="btn btn-contact">Contact Me</a>
+  <div class="card">
+    <button class="btn btn-warning w-100" onclick="calculate()">Hitung Profit & Risk</button>
+    <div id="price" class="mt-2"></div>
+    <div id="results" class="mt-2"></div>
+  </div>
 </div>
 
 <script>
-  // Floating particles
-  const particlesContainer = document.getElementById('particles');
-  function createParticle(){
-    const p = document.createElement('div');
-    p.className='particle';
-    const size = 5 + Math.random()*12;
-    p.style.width = size+'px';
-    p.style.height = size+'px';
-    p.style.left = Math.random()*100+'vw';
-    particlesContainer.appendChild(p);
-    setTimeout(()=>p.remove(),10000);
-  }
-  setInterval(createParticle,400);
+const coinSelect = document.getElementById('coin');
+const amountInput = document.getElementById('amount');
+const balanceInput = document.getElementById('balance');
+const riskInput = document.getElementById('risk');
+const targetInput = document.getElementById('target');
+const resultsDiv = document.getElementById('results');
+const priceDiv = document.getElementById('price');
+const fee = 0.001; // 0.1% fee
 
-  // Changing text
-  const changingText = document.getElementById('changingText');
-  const messages = [
-    "Frontend Developer 💻",
-    "UI/UX Enthusiast 🎨",
-    "Music Lover 🎧",
-    "Always Learning 🌱",
-    "Open for Projects 🚀"
-  ];
-  function changeText(){
-    changingText.innerText = messages[Math.floor(Math.random()*messages.length)];
-    setTimeout(changeText,2500);
+async function getPrice(coin){
+  try {
+    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=usd`);
+    const data = await res.json();
+    return data[coin]?.usd || 0;
+  } catch(e){
+    return 0;
   }
-  changeText();
+}
+
+async function calculate(){
+  const coin = coinSelect.value;
+  const amount = parseFloat(amountInput.value);
+  const balance = parseFloat(balanceInput.value);
+  const risk = parseFloat(riskInput.value);
+  const target = parseFloat(targetInput.value);
+
+  if(isNaN(amount) || isNaN(balance) || isNaN(risk) || isNaN(target)){
+    resultsDiv.innerText = "Isi semua field!";
+    return;
+  }
+
+  const currentPrice = await getPrice(coin);
+  priceDiv.innerText = `Harga real-time ${coin.toUpperCase()}: $${currentPrice}`;
+
+  const totalBuy = currentPrice * amount;
+  const totalSell = target * amount;
+  const profit = (totalSell - totalBuy) * (1 - fee);
+  const profitPercent = ((totalSell - totalBuy)/totalBuy)*100;
+  const maxLoss = balance * (risk/100);
+  const positionSize = maxLoss / Math.abs(currentPrice - target);
+
+  resultsDiv.innerText = 
+`Total Beli       : $${totalBuy.toFixed(2)}
+Total Jual       : $${totalSell.toFixed(2)}
+Profit/Loss      : $${profit.toFixed(2)} (${profitPercent.toFixed(2)}%)
+Max Position Size : ${positionSize.toFixed(4)} koin sesuai risk`;
+}
 </script>
 </body>
 </html>
