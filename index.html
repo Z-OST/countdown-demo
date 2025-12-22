@@ -4,15 +4,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diamond 💎 | Binance Live</title>
+<title>Diamond 💎 | Binance Quick Calc</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
 body { background:#fff; font-family:Arial,sans-serif; padding:20px; color:#111; }
 h1 { text-align:center; margin-bottom:20px; font-weight:bold; color:#333; }
 .card { background:#f8f9fa; border-radius:15px; padding:20px; max-width:500px; margin:0 auto; box-shadow:0 5px 15px rgba(0,0,0,0.08); }
 .card label { font-weight:bold; margin-top:10px; display:block; }
-input { margin-bottom:10px; width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; }
-input:focus { border-color:#3498db; outline:none; }
+input, select { margin-bottom:10px; width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; }
+input:focus, select:focus { border-color:#3498db; outline:none; }
 .results { white-space:pre-line; font-weight:bold; margin-top:10px; font-size:1rem; }
 .price { margin-top:5px; font-style:italic; color:#555; }
 </style>
@@ -21,21 +21,25 @@ input:focus { border-color:#3498db; outline:none; }
 <div class="container">
 <h1>Diamond 💎</h1>
 <div class="card">
-  <label for="coin">Koin (Symbol Binance, Contoh: BTCUSDT)</label>
-  <input type="text" id="coin" placeholder="Contoh: BTCUSDT">
-  
+  <label for="coin">Pilih Koin</label>
+  <select id="coinSelect">
+    <option value="btcusdt">BTC/USDT</option>
+    <option value="ethusdt">ETH/USDT</option>
+    <option value="adausdt">ADA/USDT</option>
+  </select>
+
   <label for="amount">Jumlah Koin</label>
   <input type="number" id="amount" placeholder="Jumlah koin yang dimiliki">
-  
+
   <label for="balance">Saldo Akun (USD)</label>
   <input type="number" id="balance" placeholder="Saldo akun">
-  
+
   <label for="risk">Risk % per Trade</label>
   <input type="number" id="risk" placeholder="Risk per trade (%)">
-  
+
   <label for="target">Target Harga Jual (USD)</label>
   <input type="number" id="target" placeholder="Target harga jual">
-  
+
   <div class="price">Harga real-time: ...</div>
   <div class="results"></div>
 </div>
@@ -43,37 +47,36 @@ input:focus { border-color:#3498db; outline:none; }
 
 <script>
 const fee = 0.001;
-const coinInput = document.getElementById('coin');
+const coinSelect = document.getElementById('coinSelect');
 const amountInput = document.getElementById('amount');
 const balanceInput = document.getElementById('balance');
 const riskInput = document.getElementById('risk');
 const targetInput = document.getElementById('target');
 const priceDiv = document.querySelector('.price');
 const resultsDiv = document.querySelector('.results');
-
 let ws;
 
+// Connect Binance WebSocket
 function connectWebSocket(symbol){
   if(ws) ws.close();
   if(!symbol) return;
-
   ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`);
-  
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     const price = parseFloat(data.p);
     priceDiv.innerText = `Harga real-time ${symbol.toUpperCase()}: $${price}`;
     calculate(price);
-  }
+  };
 }
 
+// Kalkulasi profit/loss
 function calculate(currentPrice){
   const amount = parseFloat(amountInput.value);
   const balance = parseFloat(balanceInput.value);
   const risk = parseFloat(riskInput.value);
   const target = parseFloat(targetInput.value);
 
-  if(isNaN(amount) || isNaN(balance) || isNaN(risk) || isNaN(target) || isNaN(currentPrice)) {
+  if(isNaN(amount) || isNaN(balance) || isNaN(risk) || isNaN(target) || isNaN(currentPrice)){
     resultsDiv.innerText='';
     return;
   }
@@ -94,12 +97,13 @@ Max Position Size : ${positionSize.toFixed(4)} koin sesuai risk`;
   resultsDiv.style.color = profit>=0 ? '#27ae60' : '#c0392b';
 }
 
-// Event input
-[coinInput, amountInput, balanceInput, riskInput, targetInput].forEach(inp => {
-  inp.addEventListener('input', () => {
-    connectWebSocket(coinInput.value.trim());
-  });
+// Event input untuk langsung update
+[coinSelect, amountInput, balanceInput, riskInput, targetInput].forEach(inp => {
+  inp.addEventListener('input', () => connectWebSocket(coinSelect.value));
 });
+
+// Connect ke koin default
+connectWebSocket(coinSelect.value);
 </script>
 </body>
 </html>
