@@ -4,25 +4,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Crypto Dashboard Single Box</title>
+<title>Diamond 💎 | Binance Live</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body { background:#ffffff; color:#111; font-family: Arial,sans-serif; padding:20px; transition: background 0.3s, color 0.3s; }
-h1 { text-align:center; margin-bottom:20px; color:#333; }
-.card { background: rgba(0,0,0,0.05); border-radius:15px; padding:20px; max-width:500px; margin:0 auto; color:#111; transition: background 0.3s, color 0.3s;}
+body { background:#fff; font-family:Arial,sans-serif; padding:20px; color:#111; }
+h1 { text-align:center; margin-bottom:20px; font-weight:bold; color:#333; }
+.card { background:#f8f9fa; border-radius:15px; padding:20px; max-width:500px; margin:0 auto; box-shadow:0 5px 15px rgba(0,0,0,0.08); }
 .card label { font-weight:bold; margin-top:10px; display:block; }
-input { margin-bottom:10px; width:100%; }
-.results { white-space:pre-line; font-weight:bold; color:#d35400; margin-top:10px; }
-#themeToggle { display:block; margin:20px auto 0; }
+input { margin-bottom:10px; width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; }
+input:focus { border-color:#3498db; outline:none; }
+.results { white-space:pre-line; font-weight:bold; margin-top:10px; font-size:1rem; }
+.price { margin-top:5px; font-style:italic; color:#555; }
 </style>
 </head>
 <body>
 <div class="container">
-<h1>Pro Crypto Dashboard 💎</h1>
-
+<h1>Diamond 💎</h1>
 <div class="card">
-  <label for="coin">Koin (Symbol)</label>
-  <input type="text" id="coin" placeholder="Contoh: BTC, ETH">
+  <label for="coin">Koin (Symbol Binance, Contoh: BTCUSDT)</label>
+  <input type="text" id="coin" placeholder="Contoh: BTCUSDT">
   
   <label for="amount">Jumlah Koin</label>
   <input type="number" id="amount" placeholder="Jumlah koin yang dimiliki">
@@ -36,11 +36,9 @@ input { margin-bottom:10px; width:100%; }
   <label for="target">Target Harga Jual (USD)</label>
   <input type="number" id="target" placeholder="Target harga jual">
   
-  <div class="price mt-2">Harga real-time: ...</div>
-  <div class="results mt-2"></div>
+  <div class="price">Harga real-time: ...</div>
+  <div class="results"></div>
 </div>
-
-<button id="themeToggle" class="btn btn-secondary">Ganti Tema</button>
 </div>
 
 <script>
@@ -52,30 +50,30 @@ const riskInput = document.getElementById('risk');
 const targetInput = document.getElementById('target');
 const priceDiv = document.querySelector('.price');
 const resultsDiv = document.querySelector('.results');
-let isDark = false;
 
-// Ambil harga real-time dari CoinGecko
-async function getPrice(symbol){
-  try{
-    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${symbol.toLowerCase()}&vs_currencies=usd`);
-    const data = await res.json();
-    return data[symbol.toLowerCase()]?.usd || 0;
-  } catch(e){ return 0; }
+let ws;
+
+function connectWebSocket(symbol){
+  if(ws) ws.close();
+  if(!symbol) return;
+
+  ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`);
+  
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    const price = parseFloat(data.p);
+    priceDiv.innerText = `Harga real-time ${symbol.toUpperCase()}: $${price}`;
+    calculate(price);
+  }
 }
 
-async function updateDashboard(){
-  const coin = coinInput.value.trim();
-  if(!coin) return;
-
+function calculate(currentPrice){
   const amount = parseFloat(amountInput.value);
   const balance = parseFloat(balanceInput.value);
   const risk = parseFloat(riskInput.value);
   const target = parseFloat(targetInput.value);
 
-  const currentPrice = await getPrice(coin);
-  priceDiv.innerText = `Harga real-time ${coin.toUpperCase()}: $${currentPrice}`;
-
-  if(isNaN(amount) || isNaN(balance) || isNaN(risk) || isNaN(target) || currentPrice===0){
+  if(isNaN(amount) || isNaN(balance) || isNaN(risk) || isNaN(target) || isNaN(currentPrice)) {
     resultsDiv.innerText='';
     return;
   }
@@ -96,26 +94,11 @@ Max Position Size : ${positionSize.toFixed(4)} koin sesuai risk`;
   resultsDiv.style.color = profit>=0 ? '#27ae60' : '#c0392b';
 }
 
-// Update otomatis saat input berubah
-[coinInput, amountInput, balanceInput, riskInput, targetInput].forEach(inp => inp.addEventListener('input', updateDashboard));
-
-// Jalankan setiap 1 detik untuk update harga
-setInterval(updateDashboard,1000);
-
-// Toggle tema
-const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', () => {
-  if(isDark){
-    document.body.style.background = '#ffffff';
-    document.body.style.color = '#111';
-    document.querySelector('.card').style.background = 'rgba(0,0,0,0.05)';
-    isDark = false;
-  } else {
-    document.body.style.background = '#121212';
-    document.body.style.color = '#fff';
-    document.querySelector('.card').style.background = 'rgba(255,255,255,0.05)';
-    isDark = true;
-  }
+// Event input
+[coinInput, amountInput, balanceInput, riskInput, targetInput].forEach(inp => {
+  inp.addEventListener('input', () => {
+    connectWebSocket(coinInput.value.trim());
+  });
 });
 </script>
 </body>
