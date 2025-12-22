@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -60,12 +59,12 @@ function calculate(){
     return;
   }
 
-  // === RUMUS PERSIS SESUAI PERINTAH LO ===
-  const labaBersih = target - price;                      // Harga jual - harga beli
-  const ROI = (labaBersih / price) * 100;               // Laba bersih : harga beli x 100
-  const totalPendapatan = invest + ROI;                 // ROI + uang yang di investasikan
-  const keuntunganInvestasi = totalPendapatan - invest; // Total pendapatan - uang yang di investasikan
-  // ==================================
+  // === RUMUS PERSIS SESUAI PERINTAH ===
+  const labaBersih = target - price;                       // Harga jual - harga beli
+  const ROI = (labaBersih / price) * 100;                 // Laba bersih : harga beli x 100
+  const totalPendapatan = invest + ROI;                   // ROI + jumlah investasi
+  const keuntunganInvestasi = totalPendapatan - invest;   // Total pendapatan - investasi
+  // =====================================
 
   resultsDiv.innerText =
 `Laba Bersih           : $${labaBersih.toFixed(4)}
