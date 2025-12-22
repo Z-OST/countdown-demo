@@ -59,9 +59,10 @@ function calculate(){
     return;
   }
 
+  // RUMUS PERSIS SESUAI YANG LO MAU
   const labaBersih = target - price;
   const ROI = (labaBersih / price) * 100;
-  const totalPendapatan = invest + (invest * ROI/100);
+  const totalPendapatan = invest + ROI; // ROI + jumlah investasi
   const keuntunganInvestasi = totalPendapatan - invest;
 
   resultsDiv.innerText =
@@ -79,6 +80,7 @@ Keuntungan Investasi   : $${keuntunganInvestasi.toFixed(4)}`;
   }
 }
 
+// Update langsung saat input berubah
 [balanceInput, investInput, priceInput, targetInput].forEach(inp => inp.addEventListener('input', calculate));
 </script>
 </body>
