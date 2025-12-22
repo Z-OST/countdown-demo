@@ -24,19 +24,19 @@ input:focus { border-color:#3498db; outline:none; }
 <h1>Diamond 💎</h1>
 <div class="card">
   <label for="price">Harga Beli per Unit (USD)</label>
-  <input type="number" id="price" placeholder="Contoh: 10">
+  <input type="number" step="0.0001" id="price" placeholder="Contoh: 10.75">
 
   <label for="amount">Jumlah Uang yang Ingin Investasi (USD)</label>
-  <input type="number" id="amount" placeholder="Contoh: 100">
+  <input type="number" step="0.01" id="amount" placeholder="Contoh: 150.50">
 
   <label for="balance">Saldo Akun (USD)</label>
-  <input type="number" id="balance" placeholder="Contoh: 500">
+  <input type="number" step="0.01" id="balance" placeholder="Contoh: 500.25">
 
   <label for="risk">Risk % per Trade</label>
-  <input type="number" id="risk" placeholder="Contoh: 2">
+  <input type="number" step="0.01" id="risk" placeholder="Contoh: 2.5">
 
   <label for="target">Target Harga Jual per Unit (USD)</label>
-  <input type="number" id="target" placeholder="Contoh: 12">
+  <input type="number" step="0.0001" id="target" placeholder="Contoh: 12.25">
 
   <div class="results"></div>
   <div class="signal"></div>
@@ -77,10 +77,10 @@ function calculate(){
 
   resultsDiv.innerText =
 `Jumlah Unit        : ${units.toFixed(4)}
-Total Beli         : $${totalBuy.toFixed(2)}
-Target Jual        : $${totalSell.toFixed(2)}
-Profit/Loss        : $${profit.toFixed(2)} (${profitPercent.toFixed(2)}%)
-Max Position Size   : $${(positionSize*price).toFixed(2)} sesuai risk`;
+Total Beli         : $${totalBuy.toFixed(4)}
+Target Jual        : $${totalSell.toFixed(4)}
+Profit/Loss        : $${profit.toFixed(4)} (${profitPercent.toFixed(2)}%)
+Max Position Size   : $${(positionSize*price).toFixed(4)} sesuai risk`;
 
   // Sinyal Buy/Sell + penjelasan
   if(price < target){
