@@ -21,19 +21,19 @@ input:focus { border-color:#3498db; outline:none; }
 </head>
 <body>
 <div class="container">
-<h1>💲</h1>
+<h1>Diamond 💎</h1>
 <div class="card">
   <label for="balance">Saldo Akun (USD)</label>
-  <input type="number" step="0.01" id="balance" placeholder="Contoh: 500.25">
+  <input type="number" step="0.01" id="balance">
 
   <label for="invest">Jumlah Investasi (USD)</label>
-  <input type="number" step="0.01" id="invest" placeholder="Contoh: 150.50">
+  <input type="number" step="0.01" id="invest">
 
   <label for="price">Harga Beli per Unit (USD)</label>
-  <input type="number" step="0.0001" id="price" placeholder="Contoh: 10.75">
+  <input type="number" step="0.0001" id="price">
 
-  <label for="target">Target Harga Jual per Unit (USD)</label>
-  <input type="number" step="0.0001" id="target" placeholder="Contoh: 12.25">
+  <label for="target">Harga Jual per Unit (USD)</label>
+  <input type="number" step="0.0001" id="target">
 
   <div class="results"></div>
   <div class="signal"></div>
@@ -41,7 +41,6 @@ input:focus { border-color:#3498db; outline:none; }
 </div>
 
 <script>
-const fee = 0.001; // biaya trading
 const balanceInput = document.getElementById('balance');
 const investInput = document.getElementById('invest');
 const priceInput = document.getElementById('price');
@@ -61,30 +60,26 @@ function calculate(){
     return;
   }
 
-  const units = invest / price;
-  const totalBuy = price * units;
-  const totalSell = target * units;
-  const profit = (totalSell - totalBuy)*(1-fee);
-  const profitPercent = ((target - price)/price)*100;
+  const labaBersih = target - price;
+  const ROI = (labaBersih / price) * 100;
+  const totalPendapatan = invest + (invest * ROI/100);
+  const keuntunganInvestasi = totalPendapatan - invest;
 
   resultsDiv.innerText =
-`Jumlah Unit        : ${units.toFixed(4)}
-Total Beli         : $${totalBuy.toFixed(4)}
-Total Jual Target  : $${totalSell.toFixed(4)}
-Selisih / Kenaikan : ${profitPercent.toFixed(2)}%
-Profit/Loss        : $${profit.toFixed(4)}
-Max Risk Sesuai Saldo : $${(balance * 0.02).toFixed(4)} (2% contoh)`;
+`Laba Bersih           : $${labaBersih.toFixed(4)}
+ROI (%)                : ${ROI.toFixed(2)}%
+Total Pendapatan       : $${totalPendapatan.toFixed(4)}
+Keuntungan Investasi   : $${keuntunganInvestasi.toFixed(4)}`;
 
   if(target > price){
-    signalDiv.innerText = `BUY ✅\nPotensi untung karena target > harga beli`;
+    signalDiv.innerText = `BUY ✅`;
     signalDiv.className = 'signal buy';
   } else {
-    signalDiv.innerText = `SELL ⚠️\nTarget sudah tercapai atau harga sekarang >= target`;
+    signalDiv.innerText = `SELL ⚠️`;
     signalDiv.className = 'signal sell';
   }
 }
 
-// Update langsung tiap input berubah
 [balanceInput, investInput, priceInput, targetInput].forEach(inp => inp.addEventListener('input', calculate));
 </script>
 </body>
