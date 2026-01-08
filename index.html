@@ -68,16 +68,54 @@ setInterval(()=>{
 
 // Quotes per kategori
 const quotes = {
-  Love:[ /* 12 quotes Love */ "Di dunia yang penuh kebohongan...", "Aku selalu berharap...", "Aku bertahan bukan karena kuat...", "Ada rasa yang gak butuh dibalas...", "Tenang bukan berarti sembuh...", "Cinta bukan soal memiliki...", "Jangan menunggu bahagia...", "Cinta datang tanpa alasan...", "Kita tak perlu sempurna...", "Senyum itu sederhana...", "Tetaplah berani...", "Cinta sejati terlihat dari perhatian kecil."],
-  Heartbreak:[ /* 5 quotes Heartbreak */ "Dongeng dengan akhir yang tidak jelas...", "Aku capek, tapi masih pengen hidup.", "Hidup kadang berat...", "Jangan takut jatuh...", "Kadang diam adalah jawaban terbaik."],
-  Friendship:[ /* 5 quotes Friendship */ "Beberapa hal patah supaya kita berhenti menggenggam.", "Persahabatan adalah harta...", "Berhenti menyesal...", "Berani berbeda...", "Kepercayaan dibangun, bukan dipaksakan."]
+  Love:[
+    "Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan. Namun kau mengajariku bahwa tidak semua jawaban bisa diselesaikan hanya dengan menghitung. Label harga di atas hati yang beku hilang oleh kehangatan asing yang perlahan datang. Aku memiliki sebuah kehadiran baru yang kusebut sebagai dirimu, dan dirimu tidak untuk dijual.",
+    "Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu, karena selama aku cinta aku bakal berusaha. Tapi kalau sudah mati rasa, aku tidak bisa menjamin aku masih ada.",
+    "Aku bertahan bukan karena kuat, tapi karena belum selesai.",
+    "Ada rasa yang gak butuh dibalas, cuma dimengerti.",
+    "Tenang bukan berarti sembuh, hanya belajar diam.",
+    "Cinta bukan soal memiliki, tapi memahami.",
+    "Jangan menunggu bahagia, ciptakan bahagia.",
+    "Cinta datang tanpa alasan, tapi pergi juga tanpa alasan.",
+    "Kita tak perlu sempurna, cukup mencoba.",
+    "Senyum itu sederhana tapi sangat berarti.",
+    "Tetaplah berani walau dunia menekan.",
+    "Cinta sejati terlihat dari perhatian kecil.",
+    "Hidup bersamamu terasa berbeda setiap hari.",
+    "Rasa yang tulus tak bisa diukur dengan kata.",
+    "Setiap detik bersamamu punya arti yang tak ternilai."
+  ],
+  Heartbreak:[
+    "Dongeng dengan akhir yang tidak jelas, aku sudah lelah… Menangis lalu tertidur sendiri dengan telepon yang terus berdering saat itu. Kenangan tentang kalian semua aku kumpulkan di satu sudut. Kisah cinta yang cukup kurasakan sekali—tidak, kisah lengkapnya pun tak cukup kalau harus diceritakan dalam satu lagu. Jika perlu seratus, maka aku akan memberimu seratus-seratusnya! Berkat itu, setiap matahari terbenam, jamku justru berjalan sebaliknya, menggoreskan lagi luka yang masih belum sembuh sampai sekarang. Namun ku ucapkan terima kasih padamu, karena sebagian besar cinta tidak terasa sakit lagi.",
+    "Aku capek, tapi masih pengen hidup.",
+    "Hidup kadang berat, tapi jangan berhenti melangkah.",
+    "Jangan takut jatuh, karena jatuh berarti belajar.",
+    "Kadang diam adalah jawaban terbaik.",
+    "Terlalu banyak kenangan yang tak bisa ku hapus.",
+    "Setiap perpisahan mengajarkan kita arti sebuah cinta.",
+    "Rindu itu seperti gelombang, datang dan pergi.",
+    "Hati yang hancur perlahan menemukan ketenangan.",
+    "Air mata tak selalu tanda lemah, tapi juga tanda peduli."
+  ],
+  Friendship:[
+    "Beberapa hal patah supaya kita berhenti menggenggam.",
+    "Persahabatan adalah harta yang tidak ternilai.",
+    "Berhenti menyesal, mulai dari sekarang.",
+    "Berani berbeda adalah kekuatan terbesar.",
+    "Kepercayaan dibangun, bukan dipaksakan.",
+    "Sahabat sejati ada saat kita tersenyum dan saat kita menangis.",
+    "Bersama teman, hidup terasa lebih ringan.",
+    "Kenangan bersama sahabat takkan pernah hilang.",
+    "Tertawa bersama sahabat adalah obat terbaik.",
+    "Saling mendukung membuat kita lebih kuat."
+  ]
 };
 
 const gallery = document.getElementById('gallery');
 const overlay = document.getElementById('overlay');
 const bigQuote = document.getElementById('bigQuote');
 
-// Intersection Observer
+// Intersection Observer untuk animasi scroll
 const observer = new IntersectionObserver((entries)=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){
@@ -114,6 +152,9 @@ buttons.forEach(btn=>{
     renderQuotes(btn.dataset.cat);
   });
 });
+
+// initial render Love
+renderQuotes('Love');
 
 // klik overlay close
 overlay.addEventListener('click',()=>overlay.classList.remove('active'));
