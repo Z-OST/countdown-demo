@@ -1,68 +1,93 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💲 | Quick Trade ROI</title>
-<style>
-body { font-family:Arial,sans-serif; padding:20px; background:#fff; color:#111; }
-h1 { text-align:center; margin-bottom:20px; }
-label { display:block; margin-top:10px; font-weight:bold; }
-input { width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px; }
-.results { white-space:pre-line; font-weight:bold; margin-top:10px; }
-</style>
+  <meta charset="UTF-8">
+  <title>Quotes Box</title>
+  <style>
+    body {
+      background: #0d1117;
+      font-family: system-ui, sans-serif;
+      color: #e6edf3;
+      margin: 0;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .box {
+      background: #161b22;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .box:hover {
+      transform: translateY(-4px);
+      background: #1f2630;
+    }
+
+    .title {
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .quote {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+      display: none;
+      opacity: 0.85;
+    }
+
+    .box.open .quote {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-<h1>💲 Quick Trade ROI</h1>
 
-<label>Saldo Akun (USD)</label>
-<input type="number" step="0.01" id="balance">
+<h1>📦 Things I Never Said</h1>
 
-<label>Jumlah Investasi (USD)</label>
-<input type="number" step="0.01" id="invest">
+<div class="container">
 
-<label>Harga Beli per Unit (USD)</label>
-<input type="number" step="0.0001" id="price">
+  <div class="box" onclick="this.classList.toggle('open')">
+    <div class="title">Klik aku</div>
+    <div class="quote">
+      Aku selalu berharap kalau cinta aku nggak pernah habis buat kamu,
+      karena selama aku cinta aku bakal berusaha.
+    </div>
+  </div>
 
-<label>Harga Jual per Unit (USD)</label>
-<input type="number" step="0.0001" id="target">
+  <div class="box" onclick="this.classList.toggle('open')">
+    <div class="title">Buka pelan-pelan</div>
+    <div class="quote">
+      Aku capek berjuang sendirian,
+      tapi aku masih di sini karena aku peduli.
+    </div>
+  </div>
 
-<div class="results" id="results"></div>
+  <div class="box" onclick="this.classList.toggle('open')">
+    <div class="title">Simpan</div>
+    <div class="quote">
+      Kalau suatu hari aku pergi,
+      itu bukan karena nggak sayang,
+      tapi karena aku kehabisan tenaga.
+    </div>
+  </div>
 
-<script>
-const balanceInput = document.getElementById('balance');
-const investInput = document.getElementById('invest');
-const priceInput = document.getElementById('price');
-const targetInput = document.getElementById('target');
-const resultsDiv = document.getElementById('results');
+</div>
 
-function calculate() {
-  const balance = parseFloat(balanceInput.value);
-  const invest = parseFloat(investInput.value);
-  const price = parseFloat(priceInput.value);
-  const target = parseFloat(targetInput.value);
-
-  if ([balance, invest, price, target].some(v => isNaN(v))) {
-    resultsDiv.innerText = '';
-    return;
-  }
-
-  // === RUMUS PERSIS SESUAI LO ===
-  const labaBersih = target - price;
-  const ROI = (labaBersih / price) * 100;
-  const totalPendapatan = ROI + invest;
-  const keuntunganInvestasi = totalPendapatan - invest;
-
-  resultsDiv.innerText =
-`Laba Bersih           : $${labaBersih.toFixed(4)}
-ROI (%)                : ${ROI.toFixed(2)}%
-Total Pendapatan       : $${totalPendapatan.toFixed(4)}
-Keuntungan Investasi   : $${keuntunganInvestasi.toFixed(4)}`;
-}
-
-// update langsung saat input
-[balanceInput, investInput, priceInput, targetInput].forEach(inp => inp.addEventListener('input', calculate));
-</script>
 </body>
 </html>
