@@ -1,93 +1,101 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Quotes Box</title>
+  <meta charset="UTF-8" />
+  <title>Quotes</title>
   <style>
     body {
-      background: #0d1117;
-      font-family: system-ui, sans-serif;
-      color: #e6edf3;
       margin: 0;
-      padding: 40px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: white;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .container {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      max-width: 900px;
-      margin: auto;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 20px;
     }
 
-    .box {
-      background: #161b22;
+    .card {
+      background: #1c1c1c;
+      padding: 20px;
       border-radius: 12px;
-      padding: 16px;
       cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
+      transition: transform .2s, background .2s;
     }
 
-    .box:hover {
-      transform: translateY(-4px);
-      background: #1f2630;
+    .card:hover {
+      transform: scale(1.05);
+      background: #2a2a2a;
     }
 
-    .title {
-      font-weight: 600;
-      opacity: 0.9;
+    /* MODAL */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
     }
 
-    .quote {
-      margin-top: 12px;
-      font-size: 14px;
-      line-height: 1.6;
-      display: none;
-      opacity: 0.85;
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
     }
 
-    .box.open .quote {
-      display: block;
+    .modal {
+      max-width: 80%;
+      text-align: center;
+      font-size: 24px;
+      animation: pop .4s ease;
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(.7);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
 
-<h1>📦 Things I Never Said</h1>
-
-<div class="container">
-
-  <div class="box" onclick="this.classList.toggle('open')">
-    <div class="title">Klik aku</div>
-    <div class="quote">
-      Aku selalu berharap kalau cinta aku nggak pernah habis buat kamu,
-      karena selama aku cinta aku bakal berusaha.
-    </div>
+<div class="grid">
+  <div class="card" onclick="openQuote(this)">
+    Aku selalu berharap cinta aku nggak habis.
   </div>
-
-  <div class="box" onclick="this.classList.toggle('open')">
-    <div class="title">Buka pelan-pelan</div>
-    <div class="quote">
-      Aku capek berjuang sendirian,
-      tapi aku masih di sini karena aku peduli.
-    </div>
+  <div class="card" onclick="openQuote(this)">
+    Selama aku cinta, aku bakal berusaha.
   </div>
-
-  <div class="box" onclick="this.classList.toggle('open')">
-    <div class="title">Simpan</div>
-    <div class="quote">
-      Kalau suatu hari aku pergi,
-      itu bukan karena nggak sayang,
-      tapi karena aku kehabisan tenaga.
-    </div>
+  <div class="card" onclick="openQuote(this)">
+    Kalau mati rasa, aku nggak bisa janji.
   </div>
-
 </div>
+
+<div class="overlay" id="overlay" onclick="closeQuote()">
+  <div class="modal" id="modalText"></div>
+</div>
+
+<script>
+  function openQuote(el) {
+    document.getElementById('modalText').innerText = el.innerText;
+    document.getElementById('overlay').classList.add('active');
+  }
+
+  function closeQuote() {
+    document.getElementById('overlay').classList.remove('active');
+  }
+</script>
 
 </body>
 </html>
