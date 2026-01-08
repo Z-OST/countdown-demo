@@ -1,137 +1,161 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galeri Quote</title>
-<style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #1e1e1e;
-    color: #f0f0f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding: 2rem;
-  }
+  <meta charset="UTF-8">
+  <title>Sentence Gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  h1 {
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    text-align: center;
-  }
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 1000px;
-  }
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .quote-box {
-    background: #2a2a2a;
-    padding: 1.5rem;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f6f5f2;
+      color: #1e1e1e;
+      padding: 40px;
+    }
 
-  .quote-box:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-  }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 500;
+      font-size: 36px;
+      color: #1e1e1e;
+    }
 
-  /* Modal */
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(30,30,30,0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-    padding: 2rem;
-    box-sizing: border-box;
-  }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
 
-  .modal.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      cursor: pointer;
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: transform .4s ease, box-shadow .4s ease;
+    }
 
-  .modal-content {
-    max-width: 800px;
-    text-align: center;
-    font-size: 1.3rem;
-    line-height: 1.6;
-    color: #f0f0f0;
-  }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
 
-  .modal-close {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #f0f0f0;
-  }
+    .card p {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
 
-</style>
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(246,245,242,0.98);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .5s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .quote-box {
+      max-width: 700px;
+      padding: 60px 50px;
+      text-align: center;
+      animation: fadeScale .5s ease;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+    }
+
+    .quote-box p {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      line-height: 1.6;
+      color: #1e1e1e;
+    }
+
+    .watermark {
+      margin-top: 40px;
+      font-size: 12px;
+      opacity: 0.4;
+      font-family: 'Inter', sans-serif;
+    }
+
+    @keyframes fadeScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .quote-box p {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Galeri Quote</h1>
+  <h1>Sentence Gallery</h1>
 
-<div class="grid">
-  <div class="quote-box" data-quote="Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan. Namun kau mengajariku bahwa tidak semua jawaban bisa diselesaikan hanya dengan menghitung. Label harga di atas hati yang beku hilang oleh kehangatan asing yang perlahan datang. Aku memiliki sebuah kehadiran baru yang kusebut sebagai dirimu, dan dirimu tidak untuk dijual.">
-    Quote 1
+  <div class="gallery">
+    <div class="card"><p>Aku bertahan bukan karena kuat, tapi karena belum selesai.</p></div>
+    <div class="card"><p>Ada rasa yang gak butuh dibalas, cuma dimengerti.</p></div>
+    <div class="card"><p>Tenang bukan berarti sembuh, hanya belajar diam.</p></div>
+    <div class="card"><p>Beberapa hal patah supaya kita berhenti menggenggam.</p></div>
+    <div class="card"><p>Aku capek, tapi masih pengen hidup.</p></div>
   </div>
-  <div class="quote-box" data-quote="Dongeng dengan akhir yang tidak jelas, aku sudah lelah… Menangis lalu tertidur sendiri dengan telepon yang terus berdering saat itu. Kenangan tentang kalian semua aku kumpulkan di satu sudut. Kisah cinta yang cukup kurasakan sekali—tidak, kisah lengkapnya pun tak cukup kalau harus diceritakan dalam satu lagu. Jika perlu seratus, maka aku akan memberimu seratus-seratusnya! Berkat itu, setiap matahari terbenam, jamku justru berjalan sebaliknya, menggoreskan lagi luka yang masih belum sembuh sampai sekarang. Namun ku ucapkan terima kasih padamu, karena sebagian besar cinta tidak terasa sakit lagi.">
-    Quote 2
+
+  <div class="overlay" id="overlay">
+    <div class="quote-box">
+      <p id="bigQuote"></p>
+      <div class="watermark">sentence gallery · 2026</div>
+    </div>
   </div>
-  <div class="quote-box" data-quote="Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu, karena selama aku cinta aku bakal berusaha. Tapi kalau sudah mati rasa, aku tidak bisa menjamin aku masih ada.">
-    Quote 3
-  </div>
-</div>
 
-<div class="modal" id="modal">
-  <div class="modal-close" id="modal-close">&times;</div>
-  <div class="modal-content" id="modal-content"></div>
-</div>
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const overlay = document.getElementById('overlay');
+    const bigQuote = document.getElementById('bigQuote');
 
-<script>
-  const boxes = document.querySelectorAll('.quote-box');
-  const modal = document.getElementById('modal');
-  const modalContent = document.getElementById('modal-content');
-  const modalClose = document.getElementById('modal-close');
-
-  boxes.forEach(box => {
-    box.addEventListener('click', () => {
-      modalContent.textContent = box.getAttribute('data-quote');
-      modal.classList.add('active');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        bigQuote.textContent = card.innerText;
+        overlay.classList.add('active');
+      });
     });
-  });
 
-  modalClose.addEventListener('click', () => {
-    modal.classList.remove('active');
-  });
-
-  // Close modal on outside click
-  modal.addEventListener('click', e => {
-    if(e.target === modal) {
-      modal.classList.remove('active');
-    }
-  });
-</script>
+    overlay.addEventListener('click', () => {
+      overlay.classList.remove('active');
+    });
+  </script>
 
 </body>
 </html>
