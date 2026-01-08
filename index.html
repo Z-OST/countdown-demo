@@ -7,39 +7,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:#f6f5f2;color:#1e1e1e;padding:40px;}
+body{font-family:'Inter',sans-serif;background:#f6f5f2;color:#1e1e1e;padding:40px;transition:background .3s,color .3s;}
+body.dark{background:#1e1e1e;color:#f6f5f2;}
 h1#galleryTitle{font-family:'Playfair Display',serif;font-size:48px;margin-bottom:20px;}
-#categorySelect{padding:12px 16px;font-size:16px;border-radius:12px;border:none;background:#e0e0e0;font-family:'Playfair Display',serif;margin-bottom:40px;cursor:pointer;}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;opacity:0;pointer-events:none;}
-.card{background:#ffffff;padding:30px;border-radius:18px;cursor:pointer;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;transform:translateY(40px);transition:transform .5s ease,opacity .5s ease,box-shadow .3s;}
+#controls{display:flex;gap:20px;margin-bottom:40px;align-items:center;}
+#categorySelect,#searchInput,#modeToggle{
+  padding:12px 16px;border-radius:12px;border:none;background:#e0e0e0;font-family:'Playfair Display',serif;font-size:16px;cursor:pointer;transition:background .3s,color .3s;
+}
+#categorySelect:focus,#searchInput:focus{outline:none;}
+#modeToggle{margin-left:auto;}
+body.dark #categorySelect,body.dark #searchInput,body.dark #modeToggle{background:#333;color:#f6f5f2;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.card{background:#ffffff;padding:20px 20px 60px 20px;border-radius:18px;cursor:pointer;min-height:160px;display:flex;align-items:center;justify-content:center;text-align:center;opacity:0;transform:translateY(40px);transition:transform .5s ease,opacity .5s ease,box-shadow .3s;position:relative;}
+body.dark .card{background:#2b2b2b;color:#f6f5f2;}
 .card:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 20px 50px rgba(0,0,0,0.1);}
-.card p{font-family:'Playfair Display',serif;font-size:16px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px;}
-.downloadBtn{padding:6px 12px;border:none;border-radius:8px;background:#1e1e1e;color:#fff;font-family:'Inter',sans-serif;font-size:14px;cursor:pointer;transition:background .3s;}
-.downloadBtn:hover{background:#333;}
+.card p{font-family:'Playfair Display',serif;font-size:16px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;}
+.card button{position:absolute;bottom:10px;right:10px;padding:6px 10px;border:none;border-radius:8px;background:#1e1e1e;color:#fff;cursor:pointer;font-size:12px;transition:background .3s;}
+body.dark .card button{background:#f6f5f2;color:#1e1e1e;}
 .overlay{position:fixed;inset:0;background:#ffffff;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;padding:20px;}
+body.dark .overlay{background:#1e1e1e;color:#f6f5f2;}
 .overlay.active{opacity:1;pointer-events:auto;}
-.quote-box{max-width:800px;padding:60px 50px;text-align:center;animation:fadeScale .5s ease;overflow-y:auto;max-height:90vh;}
-.quote-box p{font-family:'Playfair Display',serif;font-size:32px;line-height:1.6;color:#1e1e1e;}
+.quote-box{max-width:800px;padding:60px 50px;text-align:center;animation:fadeScale .5s ease;overflow-y:auto;max-height:90vh;position:relative;}
+.quote-box button{position:absolute;top:10px;right:10px;padding:6px 12px;border:none;border-radius:8px;background:#1e1e1e;color:#fff;cursor:pointer;transition:background .3s;}
+body.dark .quote-box button{background:#f6f5f2;color:#1e1e1e;}
+.quote-box p{font-family:'Playfair Display',serif;font-size:32px;line-height:1.6;margin-bottom:20px;}
 .watermark{margin-top:40px;font-size:12px;opacity:0.3;font-family:'Inter',sans-serif;}
 @keyframes fadeScale{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
-@media(max-width:600px){h1#galleryTitle{font-size:32px;}#categorySelect{font-size:14px;} .quote-box p{font-size:24px;}}
+@media(max-width:600px){h1#galleryTitle{font-size:32px;}#categorySelect,#searchInput,#modeToggle{font-size:14px;} .quote-box p{font-size:24px;}}
 </style>
 </head>
 <body>
 
 <h1 id="galleryTitle">Art Quote Gallery</h1>
 
-<select id="categorySelect">
-  <option value="">Pilih Kategori</option>
-  <option value="Love">Love</option>
-  <option value="Heartbreak">Heartbreak</option>
-  <option value="Friendship">Friendship</option>
-</select>
+<div id="controls">
+  <select id="categorySelect">
+    <option value="">Pilih Kategori</option>
+    <option value="Love">Love</option>
+    <option value="Heartbreak">Heartbreak</option>
+    <option value="Friendship">Friendship</option>
+  </select>
+  <input type="text" id="searchInput" placeholder="Cari quote...">
+  <button id="modeToggle">🌙</button>
+</div>
 
 <div class="gallery" id="gallery"></div>
 
 <div class="overlay" id="overlay">
   <div class="quote-box">
+    <button id="copyQuote">Copy</button>
     <p id="bigQuote"></p>
     <div class="watermark">Art Quote Gallery · 2026</div>
   </div>
@@ -81,7 +97,14 @@ const gallery = document.getElementById('gallery');
 const overlay = document.getElementById('overlay');
 const bigQuote = document.getElementById('bigQuote');
 const categorySelect = document.getElementById('categorySelect');
+const searchInput = document.getElementById('searchInput');
+const modeToggle = document.getElementById('modeToggle');
+const copyQuote = document.getElementById('copyQuote');
 
+let currentCategory = "";
+let favorites = new Set();
+
+// Intersection Observer untuk animasi lazy load
 const observer = new IntersectionObserver((entries)=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting){
@@ -94,88 +117,70 @@ const observer = new IntersectionObserver((entries)=>{
   });
 },{threshold:0.2});
 
-// Render grid quotes dengan tombol download PNG
-function renderQuotes(category){
+// Render quotes
+function renderQuotes(cat, filter=""){
   gallery.innerHTML='';
   gallery.style.opacity='1';
   gallery.style.pointerEvents='auto';
-  quotes[category].forEach((q,i)=>{
+  if(!cat) return;
+  quotes[cat].forEach((q,i)=>{
+    if(filter && !q.toLowerCase().includes(filter.toLowerCase())) return;
     const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<p>${q}</p><button class="downloadBtn">Download PNG</button>`;
-    div.style.transitionDelay = `${i*0.1}s`;
+    div.className='card';
+    div.innerHTML=`<p>${q}</p>`;
+    
+    // Bookmark button
+    const favBtn = document.createElement('button');
+    favBtn.textContent = favorites.has(q) ? "★" : "☆";
+    favBtn.title = "Bookmark";
+    favBtn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      if(favorites.has(q)){
+        favorites.delete(q); favBtn.textContent="☆";
+      } else {
+        favorites.add(q); favBtn.textContent="★";
+      }
+    });
+    div.appendChild(favBtn);
+
+    div.style.transitionDelay = `${i*0.05}s`;
     gallery.appendChild(div);
     observer.observe(div);
 
-    // klik card untuk overlay
-    div.querySelector('p').addEventListener('click',()=>{bigQuote.textContent=q; overlay.classList.add('active');});
-
-    // klik download button -> generate PNG
-    div.querySelector('.downloadBtn').addEventListener('click',(e)=>{
-      e.stopPropagation();
-      const canvas = document.createElement('canvas');
-      const width = 800;
-      const height = 400;
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-
-      // background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0,0,width,height);
-
-      // text
-      ctx.fillStyle = '#1e1e1e';
-      ctx.font = '28px "Playfair Display"';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      // wrap text
-      const words = q.split(' ');
-      let line = '';
-      let lines = [];
-      const maxWidth = width - 80;
-      for(let n=0;n<words.length;n++){
-        let testLine = line + words[n] + ' ';
-        let metrics = ctx.measureText(testLine);
-        if(metrics.width > maxWidth && n>0){
-          lines.push(line);
-          line = words[n] + ' ';
-        } else {
-          line = testLine;
-        }
-      }
-      lines.push(line);
-
-      // draw lines
-      const lineHeight = 36;
-      const startY = (height - lines.length*lineHeight)/2 + lineHeight/2;
-      lines.forEach((l,i)=>ctx.fillText(l.trim(), width/2, startY + i*lineHeight));
-
-      // watermark
-      ctx.font = '16px Inter';
-      ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.fillText('Art Quote Gallery · 2026', width/2, height - 30);
-
-      const link = document.createElement('a');
-      link.download = 'quote.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
+    div.addEventListener('click',()=>{bigQuote.textContent=q; overlay.classList.add('active');});
   });
 }
 
-// Event combo box
+// Combo box change
 categorySelect.addEventListener('change',()=>{
-  const cat = categorySelect.value;
-  if(cat) renderQuotes(cat);
+  currentCategory = categorySelect.value;
+  renderQuotes(currentCategory, searchInput.value);
 });
 
-// awal grid hidden
+// Search input
+searchInput.addEventListener('input',()=>{
+  renderQuotes(currentCategory, searchInput.value);
+});
+
+// Mode toggle
+modeToggle.addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+  modeToggle.textContent = document.body.classList.contains('dark') ? "☀️" : "🌙";
+});
+
+// Copy quote to clipboard
+copyQuote.addEventListener('click',()=>{
+  navigator.clipboard.writeText(bigQuote.textContent).then(()=>{
+    copyQuote.textContent="Copied!";
+    setTimeout(()=>copyQuote.textContent="Copy",1000);
+  });
+});
+
+// Awal grid hidden
 gallery.style.opacity='0';
 gallery.style.pointerEvents='none';
 
-// klik overlay close
+// Klik overlay close
 overlay.addEventListener('click',()=>overlay.classList.remove('active'));
 </script>
 
