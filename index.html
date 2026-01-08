@@ -40,6 +40,7 @@
       justify-content: center;
       text-align: center;
       transition: transform .3s ease, box-shadow .3s ease;
+      overflow: hidden;
     }
     .card:hover {
       transform: translateY(-4px);
@@ -49,6 +50,11 @@
       font-family: 'Playfair Display', serif;
       font-size: 16px;
       line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 4; /* tampilkan maksimal 4 baris */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Overlay fullscreen */
@@ -62,6 +68,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity .4s ease;
+      padding: 20px;
     }
     .overlay.active {
       opacity: 1;
@@ -72,10 +79,12 @@
       padding: 60px 50px;
       text-align: center;
       animation: fadeScale .5s ease;
+      overflow-y: auto;
+      max-height: 90vh;
     }
     .quote-box p {
       font-family: 'Playfair Display', serif;
-      font-size: 36px;
+      font-size: 32px;
       line-height: 1.6;
       color: #1e1e1e;
     }
@@ -101,9 +110,13 @@
   <h1>Art Quote Gallery</h1>
 
   <div class="gallery">
-    <div class="card"><p>Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan...</p></div>
-    <div class="card"><p>Dongeng dengan akhir yang tidak jelas, aku sudah lelah…</p></div>
-    <div class="card"><p>Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu...</p></div>
+    <div class="card">
+      <p>Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan. Namun kau mengajariku bahwa tidak semua jawaban bisa diselesaikan hanya dengan menghitung. Label harga di atas hati yang beku hilang oleh kehangatan asing yang perlahan datang. Aku memiliki sebuah kehadiran baru yang kusebut sebagai dirimu, dan dirimu tidak untuk dijual.</p>
+    </div>
+    <div class="card">
+      <p>Dongeng dengan akhir yang tidak jelas, aku sudah lelah… Menangis lalu tertidur sendiri dengan telepon yang terus berdering saat itu. Kenangan tentang kalian semua aku kumpulkan di satu sudut. Kisah cinta yang cukup kurasakan sekali—tidak, kisah lengkapnya pun tak cukup kalau harus diceritakan dalam satu lagu. Jika perlu seratus, maka aku akan memberimu seratus-seratusnya! Berkat itu, setiap matahari terbenam, jamku justru berjalan sebaliknya, menggoreskan lagi luka yang masih belum sembuh sampai sekarang. Namun ku ucapkan terima kasih padamu, karena sebagian besar cinta tidak terasa sakit lagi.</p>
+    </div>
+    <div class="card"><p>Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu, karena selama aku cinta aku bakal berusaha. Tapi kalau sudah mati rasa, aku tidak bisa menjamin aku masih ada.</p></div>
     <div class="card"><p>Aku bertahan bukan karena kuat, tapi karena belum selesai.</p></div>
     <div class="card"><p>Ada rasa yang gak butuh dibalas, cuma dimengerti.</p></div>
   </div>
