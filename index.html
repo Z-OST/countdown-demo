@@ -1,100 +1,168 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>Quotes</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0f0f0f;
-      color: white;
-    }
+<meta charset="UTF-8">
+<title>Diary</title>
+<style>
+body {
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background:#0f0f0f;
+  color:white;
+}
+.container {
+  padding:20px;
+}
+textarea {
+  width:100%;
+  height:80px;
+  border-radius:10px;
+  border:none;
+  padding:10px;
+  font-size:14px;
+  resize:none;
+}
+button {
+  margin-top:10px;
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+.add {
+  background:#4caf50;
+  color:white;
+}
+.grid {
+  margin-top:20px;
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+  gap:15px;
+}
+.card {
+  background:#1c1c1c;
+  padding:15px;
+  border-radius:12px;
+  cursor:pointer;
+  position:relative;
+}
+.actions {
+  position:absolute;
+  top:6px;
+  right:6px;
+  display:flex;
+  gap:5px;
+}
+.actions span {
+  cursor:pointer;
+  font-size:12px;
+  opacity:.6;
+}
+.actions span:hover {opacity:1}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      padding: 20px;
-    }
-
-    .card {
-      background: #1c1c1c;
-      padding: 20px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform .2s, background .2s;
-    }
-
-    .card:hover {
-      transform: scale(1.05);
-      background: #2a2a2a;
-    }
-
-    /* MODAL */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s ease;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal {
-      max-width: 80%;
-      text-align: center;
-      font-size: 24px;
-      animation: pop .4s ease;
-    }
-
-    @keyframes pop {
-      from {
-        transform: scale(.7);
-        opacity: 0;
-      }
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-  </style>
+/* MODAL */
+.overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+}
+.overlay.active {
+  opacity:1;
+  pointer-events:auto;
+}
+.modal {
+  max-width:80%;
+  text-align:center;
+  font-size:24px;
+  animation:pop .4s ease;
+}
+@keyframes pop {
+  from {transform:scale(.7); opacity:0;}
+  to {transform:scale(1); opacity:1;}
+}
+</style>
 </head>
 <body>
 
-<div class="grid">
-  <div class="card" onclick="openQuote(this)">
-    Aku selalu berharap cinta aku nggak habis.
-  </div>
-  <div class="card" onclick="openQuote(this)">
-    Selama aku cinta, aku bakal berusaha.
-  </div>
-  <div class="card" onclick="openQuote(this)">
-    Kalau mati rasa, aku nggak bisa janji.
-  </div>
+<div class="container">
+  <textarea id="input" placeholder="Tulis isi hati lo di sini..."></textarea>
+  <button class="add" onclick="addDiary()">Tambah</button>
+
+  <div class="grid" id="list"></div>
 </div>
 
-<div class="overlay" id="overlay" onclick="closeQuote()">
+<div class="overlay" id="overlay" onclick="closeModal()">
   <div class="modal" id="modalText"></div>
 </div>
 
 <script>
-  function openQuote(el) {
-    document.getElementById('modalText').innerText = el.innerText;
-    document.getElementById('overlay').classList.add('active');
-  }
+let diaries = JSON.parse(localStorage.getItem('diary')) || [];
 
-  function closeQuote() {
-    document.getElementById('overlay').classList.remove('active');
+function save() {
+  localStorage.setItem('diary', JSON.stringify(diaries));
+}
+
+function render() {
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  diaries.forEach((text, i) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerText = text.substring(0,60) + (text.length > 60 ? '...' : '');
+    div.onclick = () => openModal(text);
+
+    const act = document.createElement('div');
+    act.className = 'actions';
+    act.innerHTML = `
+      <span onclick="editDiary(${i});event.stopPropagation()">✏️</span>
+      <span onclick="deleteDiary(${i});event.stopPropagation()">🗑️</span>
+    `;
+    div.appendChild(act);
+    list.appendChild(div);
+  });
+}
+
+function addDiary() {
+  const val = input.value.trim();
+  if (!val) return;
+  diaries.unshift(val);
+  input.value = '';
+  save();
+  render();
+}
+
+function editDiary(i) {
+  const newText = prompt('Edit diary:', diaries[i]);
+  if (newText !== null) {
+    diaries[i] = newText;
+    save();
+    render();
   }
+}
+
+function deleteDiary(i) {
+  if (confirm('Hapus diary ini?')) {
+    diaries.splice(i,1);
+    save();
+    render();
+  }
+}
+
+function openModal(text) {
+  modalText.innerText = text;
+  overlay.classList.add('active');
+}
+function closeModal() {
+  overlay.classList.remove('active');
+}
+
+render();
 </script>
 
 </body>
