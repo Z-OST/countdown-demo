@@ -9,37 +9,76 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
       font-family: 'Inter', sans-serif;
-      background: #ffffff;
+      background: #f6f5f2;
       color: #1e1e1e;
+      padding: 40px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 500;
+      font-size: 36px;
+      color: #1e1e1e;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 18px;
+      cursor: pointer;
+      min-height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    }
+    .card p {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      line-height: 1.6;
     }
 
+    /* Overlay fullscreen */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .4s ease;
+    }
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
     .quote-box {
       max-width: 800px;
-      padding: 60px 40px;
+      padding: 60px 50px;
       text-align: center;
-      animation: fadeScale 0.6s ease;
+      animation: fadeScale .5s ease;
     }
-
     .quote-box p {
       font-family: 'Playfair Display', serif;
       font-size: 36px;
       line-height: 1.6;
       color: #1e1e1e;
     }
-
     .watermark {
       margin-top: 40px;
       font-size: 12px;
@@ -48,48 +87,48 @@
     }
 
     @keyframes fadeScale {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      from { opacity:0; transform: scale(0.95); }
+      to { opacity:1; transform: scale(1); }
     }
 
     @media (max-width: 600px) {
-      .quote-box p {
-        font-size: 24px;
-      }
+      .quote-box p { font-size: 24px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="quote-box">
-    <p id="quoteText">Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan. Namun kau mengajariku bahwa tidak semua jawaban bisa diselesaikan hanya dengan menghitung. Label harga di atas hati yang beku hilang oleh kehangatan asing yang perlahan datang. Aku memiliki sebuah kehadiran baru yang kusebut sebagai dirimu, dan dirimu tidak untuk dijual.</p>
-    <div class="watermark">Art Quote Gallery · 2026</div>
+  <h1>Art Quote Gallery</h1>
+
+  <div class="gallery">
+    <div class="card"><p>Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan...</p></div>
+    <div class="card"><p>Dongeng dengan akhir yang tidak jelas, aku sudah lelah…</p></div>
+    <div class="card"><p>Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu...</p></div>
+    <div class="card"><p>Aku bertahan bukan karena kuat, tapi karena belum selesai.</p></div>
+    <div class="card"><p>Ada rasa yang gak butuh dibalas, cuma dimengerti.</p></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="quote-box">
+      <p id="bigQuote"></p>
+      <div class="watermark">Art Quote Gallery · 2026</div>
+    </div>
   </div>
 
   <script>
-    // Optional: bisa ganti-ganti quote jika mau
-    const quotes = [
-      "Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan. Namun kau mengajariku bahwa tidak semua jawaban bisa diselesaikan hanya dengan menghitung. Label harga di atas hati yang beku hilang oleh kehangatan asing yang perlahan datang. Aku memiliki sebuah kehadiran baru yang kusebut sebagai dirimu, dan dirimu tidak untuk dijual.",
-      "Dongeng dengan akhir yang tidak jelas, aku sudah lelah… Menangis lalu tertidur sendiri dengan telepon yang terus berdering saat itu. Kenangan tentang kalian semua aku kumpulkan di satu sudut. Kisah cinta yang cukup kurasakan sekali—tidak, kisah lengkapnya pun tak cukup kalau harus diceritakan dalam satu lagu. Jika perlu seratus, maka aku akan memberimu seratus-seratusnya! Berkat itu, setiap matahari terbenam, jamku justru berjalan sebaliknya, menggoreskan lagi luka yang masih belum sembuh sampai sekarang. Namun ku ucapkan terima kasih padamu, karena sebagian besar cinta tidak terasa sakit lagi.",
-      "Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu, karena selama aku cinta aku bakal berusaha. Tapi kalau sudah mati rasa, aku tidak bisa menjamin aku masih ada."
-    ];
+    const cards = document.querySelectorAll('.card');
+    const overlay = document.getElementById('overlay');
+    const bigQuote = document.getElementById('bigQuote');
 
-    let current = 0;
-    const quoteText = document.getElementById('quoteText');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        bigQuote.textContent = card.innerText;
+        overlay.classList.add('active');
+      });
+    });
 
-    // Klik untuk ganti quote
-    document.body.addEventListener('click', () => {
-      current = (current + 1) % quotes.length;
-      quoteText.textContent = quotes[current];
-      quoteText.parentElement.style.animation = 'none';
-      void quoteText.parentElement.offsetWidth; // restart animation
-      quoteText.parentElement.style.animation = 'fadeScale 0.6s ease';
+    overlay.addEventListener('click', () => {
+      overlay.classList.remove('active');
     });
   </script>
 
