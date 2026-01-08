@@ -1,149 +1,116 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Art Quote Gallery</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Art Quote Gallery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#f6f5f2;color:#1e1e1e;padding:40px;}
+h1{text-align:center;margin-bottom:40px;font-family:'Playfair Display',serif;font-weight:500;font-size:36px;color:#1e1e1e;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;overflow-y:auto;max-height:80vh;}
+.card{background:#ffffff;padding:30px;border-radius:18px;cursor:pointer;min-height:160px;display:flex;align-items:center;justify-content:center;text-align:center;transition:transform .5s ease,opacity .5s ease;opacity:0;transform:translateY(40px);}
+.card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 15px 40px rgba(0,0,0,0.08);}
+.card p{font-family:'Playfair Display',serif;font-size:16px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;}
 
-  <style>
-    * { box-sizing: border-box; margin:0; padding:0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f6f5f2;
-      color: #1e1e1e;
-      padding: 40px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 40px;
-      font-family: 'Playfair Display', serif;
-      font-weight: 500;
-      font-size: 36px;
-      color: #1e1e1e;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 18px;
-      cursor: pointer;
-      min-height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      transition: transform .3s ease, box-shadow .3s ease;
-      overflow: hidden;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-    }
-    .card p {
-      font-family: 'Playfair Display', serif;
-      font-size: 16px;
-      line-height: 1.6;
-      display: -webkit-box;
-      -webkit-line-clamp: 4; /* tampilkan maksimal 4 baris */
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+/* Overlay fullscreen */
+.overlay{position:fixed;inset:0;background:#ffffff;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;padding:20px;}
+.overlay.active{opacity:1;pointer-events:auto;}
+.quote-box{max-width:800px;padding:60px 50px;text-align:center;animation:fadeScale .5s ease;overflow-y:auto;max-height:90vh;}
+.quote-box p{font-family:'Playfair Display',serif;font-size:32px;line-height:1.6;color:#1e1e1e;}
+.watermark{margin-top:40px;font-size:12px;opacity:0.3;font-family:'Inter',sans-serif;}
 
-    /* Overlay fullscreen */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .4s ease;
-      padding: 20px;
-    }
-    .overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .quote-box {
-      max-width: 800px;
-      padding: 60px 50px;
-      text-align: center;
-      animation: fadeScale .5s ease;
-      overflow-y: auto;
-      max-height: 90vh;
-    }
-    .quote-box p {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      line-height: 1.6;
-      color: #1e1e1e;
-    }
-    .watermark {
-      margin-top: 40px;
-      font-size: 12px;
-      opacity: 0.3;
-      font-family: 'Inter', sans-serif;
-    }
-
-    @keyframes fadeScale {
-      from { opacity:0; transform: scale(0.95); }
-      to { opacity:1; transform: scale(1); }
-    }
-
-    @media (max-width: 600px) {
-      .quote-box p { font-size: 24px; }
-    }
-  </style>
+@keyframes fadeScale{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+@media(max-width:600px){.quote-box p{font-size:24px;}}
+</style>
 </head>
 <body>
 
-  <h1>Art Quote Gallery</h1>
+<h1>Art Quote Gallery</h1>
 
-  <div class="gallery">
-    <div class="card">
-      <p>Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan. Namun kau mengajariku bahwa tidak semua jawaban bisa diselesaikan hanya dengan menghitung. Label harga di atas hati yang beku hilang oleh kehangatan asing yang perlahan datang. Aku memiliki sebuah kehadiran baru yang kusebut sebagai dirimu, dan dirimu tidak untuk dijual.</p>
-    </div>
-    <div class="card">
-      <p>Dongeng dengan akhir yang tidak jelas, aku sudah lelah… Menangis lalu tertidur sendiri dengan telepon yang terus berdering saat itu. Kenangan tentang kalian semua aku kumpulkan di satu sudut. Kisah cinta yang cukup kurasakan sekali—tidak, kisah lengkapnya pun tak cukup kalau harus diceritakan dalam satu lagu. Jika perlu seratus, maka aku akan memberimu seratus-seratusnya! Berkat itu, setiap matahari terbenam, jamku justru berjalan sebaliknya, menggoreskan lagi luka yang masih belum sembuh sampai sekarang. Namun ku ucapkan terima kasih padamu, karena sebagian besar cinta tidak terasa sakit lagi.</p>
-    </div>
-    <div class="card"><p>Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu, karena selama aku cinta aku bakal berusaha. Tapi kalau sudah mati rasa, aku tidak bisa menjamin aku masih ada.</p></div>
-    <div class="card"><p>Aku bertahan bukan karena kuat, tapi karena belum selesai.</p></div>
-    <div class="card"><p>Ada rasa yang gak butuh dibalas, cuma dimengerti.</p></div>
+<div class="gallery" id="gallery">
+  <!-- cards akan dibuat oleh JS -->
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="quote-box">
+    <p id="bigQuote"></p>
+    <div class="watermark">Art Quote Gallery · 2026</div>
   </div>
+</div>
 
-  <div class="overlay" id="overlay">
-    <div class="quote-box">
-      <p id="bigQuote"></p>
-      <div class="watermark">Art Quote Gallery · 2026</div>
-    </div>
-  </div>
+<script>
+const quotes=[
+"Di dunia yang penuh kebohongan, bahkan hati dan cinta saja diperhitungkan. Namun kau mengajariku bahwa tidak semua jawaban bisa diselesaikan hanya dengan menghitung. Label harga di atas hati yang beku hilang oleh kehangatan asing yang perlahan datang. Aku memiliki sebuah kehadiran baru yang kusebut sebagai dirimu, dan dirimu tidak untuk dijual.",
+"Dongeng dengan akhir yang tidak jelas, aku sudah lelah… Menangis lalu tertidur sendiri dengan telepon yang terus berdering saat itu. Kenangan tentang kalian semua aku kumpulkan di satu sudut. Kisah cinta yang cukup kurasakan sekali—tidak, kisah lengkapnya pun tak cukup kalau harus diceritakan dalam satu lagu. Jika perlu seratus, maka aku akan memberimu seratus-seratusnya! Berkat itu, setiap matahari terbenam, jamku justru berjalan sebaliknya, menggoreskan lagi luka yang masih belum sembuh sampai sekarang. Namun ku ucapkan terima kasih padamu, karena sebagian besar cinta tidak terasa sakit lagi.",
+"Aku selalu berharap kalau cinta aku tidak pernah habis buat kamu, karena selama aku cinta aku bakal berusaha. Tapi kalau sudah mati rasa, aku tidak bisa menjamin aku masih ada.",
+"Aku bertahan bukan karena kuat, tapi karena belum selesai.",
+"Ada rasa yang gak butuh dibalas, cuma dimengerti.",
+"Tenang bukan berarti sembuh, hanya belajar diam.",
+"Beberapa hal patah supaya kita berhenti menggenggam.",
+"Aku capek, tapi masih pengen hidup.",
+"Cinta bukan soal memiliki, tapi memahami.",
+"Jangan menunggu bahagia, ciptakan bahagia.",
+"Hidup kadang berat, tapi jangan berhenti melangkah.",
+"Kesalahan bukan akhir dari segalanya.",
+"Setiap luka mengajarkan kita untuk lebih kuat.",
+"Jangan takut jatuh, karena jatuh berarti belajar.",
+"Hidup adalah kumpulan momen kecil yang berarti.",
+"Cinta datang tanpa alasan, tapi pergi juga tanpa alasan.",
+"Kita tak perlu sempurna, cukup mencoba.",
+"Berhenti menyesal, mulai dari sekarang.",
+"Senyum itu sederhana tapi sangat berarti.",
+"Kadang diam adalah jawaban terbaik.",
+"Jangan biarkan kata orang menentukan hidupmu.",
+"Berani berbeda adalah kekuatan terbesar.",
+"Kepercayaan dibangun, bukan dipaksakan.",
+"Setiap hari adalah halaman baru untuk kita tulis.",
+"Jangan bandingkan dirimu dengan orang lain.",
+"Sedikit yang konsisten lebih baik daripada banyak yang setengah hati.",
+"Hidup ini indah jika kita melihatnya dengan hati.",
+"Setiap akhir adalah awal baru yang menunggu.",
+"Tetaplah berani walau dunia menekan.",
+"Cinta sejati terlihat dari perhatian kecil."
+];
 
-  <script>
-    const cards = document.querySelectorAll('.card');
-    const overlay = document.getElementById('overlay');
-    const bigQuote = document.getElementById('bigQuote');
+const gallery=document.getElementById('gallery');
 
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        bigQuote.textContent = card.innerText;
-        overlay.classList.add('active');
-      });
-    });
+// buat cards
+quotes.forEach(q=>{
+  const div=document.createElement('div');
+  div.className='card';
+  div.innerHTML=`<p>${q}</p>`;
+  gallery.appendChild(div);
+});
 
-    overlay.addEventListener('click', () => {
-      overlay.classList.remove('active');
-    });
-  </script>
+// animasi scroll masuk halus dengan Intersection Observer
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.opacity='1';
+      entry.target.style.transform='translateY(0)';
+    }else{
+      entry.target.style.opacity='0';
+      entry.target.style.transform='translateY(40px)';
+    }
+  });
+},{threshold:0.2});
+
+document.querySelectorAll('.card').forEach(card=>observer.observe(card));
+
+// klik fullscreen
+const overlay=document.getElementById('overlay');
+const bigQuote=document.getElementById('bigQuote');
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    bigQuote.textContent=card.innerText;
+    overlay.classList.add('active');
+  });
+});
+overlay.addEventListener('click',()=>overlay.classList.remove('active'));
+</script>
 
 </body>
 </html>
